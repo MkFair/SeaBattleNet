@@ -1,0 +1,3 @@
+﻿  SeaBattle.cpp
+C:\Users\kertis\source\repos\SeaBattle\SeaBattle\SeaBattle.cpp(90,55): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  SeaBattle.vcxproj -> C:\Users\kertis\source\repos\SeaBattle\x64\Debug\SeaBattle.exe
