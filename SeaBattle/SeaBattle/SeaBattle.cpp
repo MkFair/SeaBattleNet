@@ -105,5 +105,6 @@ int main()
 
     std::vector<std::vector<char>> field(row, std::vector<char>(column));
     field = InitField(row, column);
+    ShowField(field, row, column);
   
 }   
