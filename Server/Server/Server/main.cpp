@@ -2,7 +2,7 @@
 #include <ws2tcpip.h>
 #include <iostream>
 #include <vector>
-#include "functions.h"
+#include "server_functions.h"
 
 #define LISTEN_PORT 5445
 
@@ -98,13 +98,5 @@ int main()
 
     WSACleanup();
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
-    int row = 10;
-
-    int column = 10;
-
-    std::vector<std::vector<char>> field(row, std::vector<char>(column));
-    field = InitField(row, column);
-    ShowField(field, row, column);
-
+    return 0;
 }
