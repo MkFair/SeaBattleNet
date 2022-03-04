@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 .gitignore
 =======
-
+Customer/Customer/.vs
+Server/Server/.vs
 >>>>>>> 55a167ce8530e0b147575a243e6e9d48db400a84
