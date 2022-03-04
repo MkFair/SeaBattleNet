@@ -22,62 +22,127 @@ std::vector<std::vector<char>> InitField(int rows, int columns)
 
 void ShowField(const std::vector<std::vector<char>>& my_field, int rows, int columns)
 {
-	std::cout << "\tYOUR FIELD\t\t\t\tENEMY`S FIELD" << std::endl;
+	//std::cout << "\tYOUR FIELD\t\t\t\tENEMY`S FIELD" << std::endl;
+	std::cout << "\tYOUR FIELD" << std::endl;
+
+	for (int i = 1; i <= columns; ++i)
+	{
+		if (i == 1) std::cout << "    " << i;
+		else std::cout << "  " << i;
+	}
+
+	std::cout << std::endl;
 
 	for (int i = 0; i < rows; ++i)
 	{
 		std::cout << i + 1;
 		for (int j = 0; j < columns; ++j)
-			std::cout << '\t' << my_field[i][j];
+		{
+			if (i != 9  && j == 0) std::cout << "   " << my_field[i][j];
+			else std::cout << "  " << my_field[i][j];
+		}
 		std::cout << std::endl;
 	}
 
 
 }
-//bool AreCellsArrangedHorizontallySuccessively()(std::vector<std::vector<int>> ship, int quantity_of_deck_)
+bool AreCellsArrangedHorizontallySuccessively(std::vector<std::vector<int>> ship, int quantity_of_deck_)
 {
 	switch (quantity_of_deck_)
 	{
-	case 1: return true;
-	case 2: if (ship[0][0] == ship[1][0] && (ship[0][1] + 1 == ship[1][1] || ship[0][1] - 1 == ship[1][1] )   ) return true;
-	case 3: if (ship[0][0] == ship[1][0] && ship[2][0] == ship[1][0]  && 
-				((ship[0][1] + 1 == ship[1][1] && ship[0][1] + 2 == ship[2][1] )  ||  
-				(ship[0][1] - 1 == ship[1][1] && ship[0][1] + 1 == ship[2][1] )  ||
-				(ship[0][1] + 1 == ship[2][1] && ship[2][1] + 1 == ship[1][1] )  ||
-				(ship[0][1] - 1 == ship[1][1] && ship[2][1] + 1 == ship[0][1] )  ||
-				(ship[2][1] + 1 == ship[0][1] && ship[0][1] + 1 == ship[1][1] )  ||
-				(ship[2][1] + 1 == ship[1][1] && ship[1][1]) + 1 == ship[0][1] )   )) return true;
-	case4:
-		
+		case 1: return true; break;
+		case 2: if (ship[0][1] == ship[1][1] && (ship[0][1] + 1 == ship[1][1] || ship[0][1] - 1 == ship[1][1])) return true;
+		case 3: if (ship[0][1] == ship[1][1] && ship[2][1] == ship[1][1]  && 
+				   ((ship[0][0] + 1 == ship[1][0] && ship[0][0] + 2 == ship[2][0] )  ||  
+					(ship[0][0] - 1 == ship[1][0] && ship[0][0] + 1 == ship[2][0] )  ||
+					(ship[0][0] + 1 == ship[2][0] && ship[2][0] + 1 == ship[1][0] )  ||
+					(ship[0][0] - 1 == ship[1][0] && ship[2][0] + 1 == ship[0][0] )  ||
+					(ship[2][0] + 1 == ship[0][0] && ship[0][0] + 1 == ship[1][0] )  ||
+					(ship[2][0] + 1 == ship[1][0] && ship[1][0] + 1 == ship[0][0]))) return true;
+		case 4: if (ship[0][1] == ship[1][1] && ship[2][1] == ship[1][1] && ship[2][1] == ship[3][1] &&
+				  ((ship[0][0] + 1 == ship[1][0] && ship[0][0] + 2 == ship[2][0] && ship[0][0] + 3 == ship[3][0]) ||
+				   (ship[0][0] + 1 == ship[1][0] && ship[0][0] + 2 == ship[3][0] && ship[0][0] + 3 == ship[2][0]) ||
+				   (ship[0][0] + 1 == ship[3][0] && ship[0][0] + 2 == ship[1][0] && ship[0][0] + 3 == ship[2][0]) ||
+				   (ship[0][0] + 1 == ship[3][0] && ship[0][0] + 2 == ship[2][0] && ship[0][0] + 3 == ship[1][0]) ||
+				   (ship[0][0] + 1 == ship[2][0] && ship[0][0] + 2 == ship[1][0] && ship[0][0] + 3 == ship[3][0]) ||
+				   (ship[0][0] + 1 == ship[2][0] && ship[0][0] + 2 == ship[3][0] && ship[0][0] + 3 == ship[3][0]) ||
+
+				   (ship[1][0] + 1 == ship[0][0] && ship[1][0] + 2 == ship[2][0] && ship[1][0] + 3 == ship[3][0]) ||
+				   (ship[1][0] + 1 == ship[0][0] && ship[1][0] + 2 == ship[3][0] && ship[1][0] + 3 == ship[2][0]) ||
+				   (ship[1][0] + 1 == ship[2][0] && ship[1][0] + 2 == ship[3][0] && ship[1][0] + 3 == ship[0][0]) ||
+				   (ship[1][0] + 1 == ship[2][0] && ship[1][0] + 2 == ship[0][0] && ship[1][0] + 3 == ship[3][0]) ||
+				   (ship[1][0] + 1 == ship[3][0] && ship[1][0] + 2 == ship[2][0] && ship[1][0] + 3 == ship[0][0]) ||
+				   (ship[1][0] + 1 == ship[3][0] && ship[1][0] + 2 == ship[0][0] && ship[1][0] + 3 == ship[2][0]) ||
+
+				   (ship[3][0] + 1 == ship[0][0] && ship[3][0] + 2 == ship[2][0] && ship[3][0] + 3 == ship[1][0]) ||
+				   (ship[3][0] + 1 == ship[0][0] && ship[3][0] + 2 == ship[1][0] && ship[3][0] + 3 == ship[2][0]) ||
+				   (ship[3][0] + 1 == ship[1][0] && ship[3][0] + 2 == ship[2][0] && ship[3][0] + 3 == ship[0][0]) ||
+				   (ship[3][0] + 1 == ship[1][0] && ship[3][0] + 2 == ship[0][0] && ship[3][0] + 3 == ship[2][0]) ||
+				   (ship[3][0] + 1 == ship[2][0] && ship[3][0] + 2 == ship[1][0] && ship[3][0] + 3 == ship[0][0]) ||
+				   (ship[3][0] + 1 == ship[2][0] && ship[3][0] + 2 == ship[0][0] && ship[3][0] + 3 == ship[1][0]) ||
+
+				   (ship[2][0] + 1 == ship[0][0] && ship[2][0] + 2 == ship[3][0] && ship[3][0] + 3 == ship[1][0]) ||
+				   (ship[2][0] + 1 == ship[0][0] && ship[2][0] + 2 == ship[1][0] && ship[3][0] + 3 == ship[3][0]) ||
+				   (ship[2][0] + 1 == ship[1][0] && ship[2][0] + 2 == ship[0][0] && ship[3][0] + 3 == ship[3][0]) ||
+				   (ship[2][0] + 1 == ship[1][0] && ship[2][0] + 2 == ship[3][0] && ship[3][0] + 3 == ship[0][0]) ||
+				   (ship[2][0] + 1 == ship[3][0] && ship[2][0] + 2 == ship[1][0] && ship[3][0] + 3 == ship[0][0]) ||
+				   (ship[2][0] + 1 == ship[3][0] && ship[2][0] + 2 == ship[0][0] && ship[3][0] + 3 == ship[1][0]))) return true;
 	}
 	return false;
 }
-//bool AreCellsArrangedVerticallySuccessively()(std::vector<std::vector<int>> ship, int quantity_of_deck_)
-{
 
+bool AreCellsArrangedVerticallySuccessively(std::vector<std::vector<int>> ship, int quantity_of_deck_)
+{
+	switch (quantity_of_deck_)
+	{
+		case 1: return true; break;
+		case 2: if (ship[0][0] == ship[1][0] && (ship[0][1] + 1 == ship[1][1] || ship[0][1] - 1 == ship[1][1])) return true;
+		case 3: if (ship[0][0] == ship[1][0] && ship[2][0] == ship[1][0] &&
+				  ((ship[0][1] + 1 == ship[1][1] && ship[0][1] + 2 == ship[2][1]) ||
+					(ship[0][1] - 1 == ship[1][1] && ship[0][1] + 1 == ship[2][1]) ||
+					(ship[0][1] + 1 == ship[2][1] && ship[2][1] + 1 == ship[1][1]) ||
+					(ship[0][1] - 1 == ship[1][1] && ship[2][1] + 1 == ship[0][1]) ||
+					(ship[2][1] + 1 == ship[0][1] && ship[0][1] + 1 == ship[1][1]) ||
+					(ship[2][1] + 1 == ship[1][1] && ship[1][1] + 1 == ship[0][1]))) return true;
+		case 4: if (ship[0][0] == ship[1][0] && ship[2][0] == ship[1][0] && ship[2][0] == ship[3][0] &&
+			      ((ship[0][1] + 1 == ship[1][1] && ship[0][1] + 2 == ship[2][1] && ship[0][1] + 3 == ship[3][1]) ||
+					(ship[0][1] + 1 == ship[1][1] && ship[0][1] + 2 == ship[3][1] && ship[0][1] + 3 == ship[2][1]) ||
+					(ship[0][1] + 1 == ship[3][1] && ship[0][1] + 2 == ship[1][1] && ship[0][1] + 3 == ship[2][1]) ||
+					(ship[0][1] + 1 == ship[3][1] && ship[0][1] + 2 == ship[2][1] && ship[0][1] + 3 == ship[1][1]) ||
+					(ship[0][1] + 1 == ship[2][1] && ship[0][1] + 2 == ship[1][1] && ship[0][1] + 3 == ship[3][1]) ||
+					(ship[0][1] + 1 == ship[2][1] && ship[0][1] + 2 == ship[3][1] && ship[0][1] + 3 == ship[3][1]) ||
+
+					(ship[1][1] + 1 == ship[0][1] && ship[1][1] + 2 == ship[2][1] && ship[1][1] + 3 == ship[3][1]) ||
+					(ship[1][1] + 1 == ship[0][1] && ship[1][1] + 2 == ship[3][1] && ship[1][1] + 3 == ship[2][1]) ||
+					(ship[1][1] + 1 == ship[2][1] && ship[1][1] + 2 == ship[3][1] && ship[1][1] + 3 == ship[0][1]) ||
+					(ship[1][1] + 1 == ship[2][1] && ship[1][1] + 2 == ship[0][1] && ship[1][1] + 3 == ship[3][1]) ||
+					(ship[1][1] + 1 == ship[3][1] && ship[1][1] + 2 == ship[2][1] && ship[1][1] + 3 == ship[0][1]) ||
+					(ship[1][1] + 1 == ship[3][1] && ship[1][1] + 2 == ship[0][1] && ship[1][1] + 3 == ship[2][1]) ||
+
+					(ship[3][1] + 1 == ship[0][1] && ship[3][1] + 2 == ship[2][1] && ship[3][1] + 3 == ship[1][1]) ||
+					(ship[3][1] + 1 == ship[0][1] && ship[3][1] + 2 == ship[1][1] && ship[3][1] + 3 == ship[2][1]) ||
+					(ship[3][1] + 1 == ship[1][1] && ship[3][1] + 2 == ship[2][1] && ship[3][1] + 3 == ship[0][1]) ||
+					(ship[3][1] + 1 == ship[1][1] && ship[3][1] + 2 == ship[0][1] && ship[3][1] + 3 == ship[2][1]) ||
+					(ship[3][1] + 1 == ship[2][1] && ship[3][1] + 2 == ship[1][1] && ship[3][1] + 3 == ship[0][1]) ||
+					(ship[3][1] + 1 == ship[2][1] && ship[3][1] + 2 == ship[0][1] && ship[3][1] + 3 == ship[1][1]) ||
+
+					(ship[2][1] + 1 == ship[0][1] && ship[2][1] + 2 == ship[3][1] && ship[3][1] + 3 == ship[1][1]) ||
+					(ship[2][1] + 1 == ship[0][1] && ship[2][1] + 2 == ship[1][1] && ship[3][1] + 3 == ship[3][1]) ||
+					(ship[2][1] + 1 == ship[1][1] && ship[2][1] + 2 == ship[0][1] && ship[3][1] + 3 == ship[3][1]) ||
+					(ship[2][1] + 1 == ship[1][1] && ship[2][1] + 2 == ship[3][1] && ship[3][1] + 3 == ship[0][1]) ||
+					(ship[2][1] + 1 == ship[3][1] && ship[2][1] + 2 == ship[1][1] && ship[3][1] + 3 == ship[0][1]) ||
+					(ship[2][1] + 1 == ship[3][1] && ship[2][1] + 2 == ship[0][1] && ship[3][1] + 3 == ship[1][1]))) return true;
+	}
+	return false;
 }
-bool CheckSequence(std::vector<std::vector<char>>& my_field, int field_rows, int field_columns, int quantity_of_deck, std::vector<std::vector<int>> my_ship)//подряд ли клеточки?аргументы: сначала поле и его размеры. потом координаты корабля
+bool CheckSequence(int quantity_of_deck, std::vector<std::vector<int>> my_ship, IsSuccessively_t IsSuccessivelyF1, IsSuccessively_t IsSuccessivelyF2)//подряд ли клеточки?аргументы: сначала поле и его размеры. потом координаты корабля
 {
 	//проверка ПОЛНОЦЕННЫЙ ЛИ КОРАБЛЬ.
 	//ТО ЕСТЬ НЕТ ЛИ ПРОБЕЛОВ МЕЖДУ ПАЛУБАМИ
-
-	//int count = 0;
-
 	// КОРАБЛЬ ЛИБО ГОРИЗОНТАЛЬНО РАСПОЛОЖЕН || ЛИБО ВЕРТИКАЛЬНО
-	//нужна функция bool ПодрядЛиВертикальноРасположеныВсеКлетки()
-	// 	  ПодрядЛиГоризонтальноРасположеныВсеКлетки()
-
+	if (IsSuccessivelyF1(my_ship, quantity_of_deck)  ||  IsSuccessivelyF2(my_ship, quantity_of_deck)  ) return true;
 	
-
-
-	//проверка СЛЕВА НАПРАВО    check from  LEFT TO RIGHT
-	
-	//проверка СПРАВА НАЛЕВО    check from  RIGHT TO LEFT 
-	
-	//проверка  СВЕРХУ ВНИЗ     check from  TOP TO BOTTOM
-	
-	//проверка  СНИЗУ ВВЕРХ     check from  BOTTOM  TO  TOP
-
+	return false;
 }
 void EnterCoordinate(int& coordinate)
 {
@@ -96,13 +161,13 @@ void EnterCoordinate(int& coordinate)
 bool IsPartOfShip(std::vector<std::vector<int>>& this_ship, int row_number_, int column_number_ )
 {
 	//часть ли это рассматриваемого корабля
-	for (int i = 0; i < this_ship.size(); ++i)
+	for (int i = 0; i < (int)this_ship.size(); ++i)
 		if (this_ship[i][0] == row_number_ && this_ship[i][1] == column_number_) return true;
 	return false;
 }
 
 bool IsNearHereAnotherShips(std::vector<std::vector<char>>& my_field, int rows, int columns, int row_number_, int column_number_)
-{
+{ 
 	//ПРОВЕРКА НЕТ ЛИ РЯДОМ ДРУГИХ КОРАБЛЕЙ
 	// ЕСЛИ ПАЛУБА РЯДОМ С ДРУГИМ КОРАБЛЕМ return true;
 
@@ -117,7 +182,7 @@ bool IsNearHereAnotherShips(std::vector<std::vector<char>>& my_field, int rows, 
 
 	return false;
 }
-void AlgorithArrangeShips(std::vector<std::vector<char>>& field, int field_rows, int field_columns, int quantity_of_ships, int quantity_of_decks, функция IsNearHereAnotherShips, IsPartOfShip_t IsPartOfShipF)
+void AlgorithArrangeShips(std::vector<std::vector<char>>& field, int field_rows, int field_columns, int quantity_of_ships, int quantity_of_decks, IsNearHereAnotherShips_t IsNearHereAnotherShipsF, IsPartOfShip_t IsPartOfShipF, ShowField_t ShowFieldF)
 {
 	int row_number;
 
@@ -141,7 +206,7 @@ void AlgorithArrangeShips(std::vector<std::vector<char>>& field, int field_rows,
 				EnterCoordinate(column_number);
 
 				//ПРОВЕРКА НЕТ ЛИ РЯДОМ ДРУГИХ КОРАБЛЕЙ. 
-				if (field[row_number][column_number] == 'k' || (IsPartOfShipF(ship, row_number, column_number) && IsNearHereAnotherShips(field, field_rows, field_columns, row_number, column_number)))//если уже там стоит корабль или если рядом уже стоял корабль
+				if (field[row_number][column_number] == 'k' || (IsPartOfShipF(ship, row_number, column_number) && IsNearHereAnotherShipsF(field, field_rows, field_columns, row_number, column_number)))//если уже там стоит корабль или если рядом уже стоял корабль
 				{
 					std::cout << "There is already part of a ship or a ship in this cell or near here." << std::endl;
 					std::cout << "Please try again to enter cell coordinates." << std::endl;
@@ -153,15 +218,17 @@ void AlgorithArrangeShips(std::vector<std::vector<char>>& field, int field_rows,
 					ship[i - 1][1] = column_number;
 				}
 			}
-		} while (CheckSequence(ship, )); //проверка ПОЛНОЦЕННЫЙ ЛИ КОРАБЛЬ
+		} while(CheckSequence(quantity_of_decks, ship, AreCellsArrangedHorizontallySuccessively, AreCellsArrangedVerticallySuccessively)); //проверка ПОЛНОЦЕННЫЙ ЛИ КОРАБЛЬ
 		
 		//ЗАПИСЫВАЕМ КОРАБЛЬ НА ПОЛЕ
-		for (int i = 0; i < quantity_of_decks; ++i)//loop for a decks of the ship
+		for(int i = 0; i < quantity_of_decks; ++i)//loop for a decks of the ship
 			field[  ship[i][0]  ][  ship[i][1]  ] = 'k';
+		//show field
+		ShowFieldF(field, field_rows, field_columns);
 	}
 }
 
-void ArrangeShips(std::vector<std::vector<char>>& my_field, int rows, int columns)
+void ArrangeShips(std::vector<std::vector<char>>& my_field, int rows, int columns, AlgorithArrangeShips_t AlgorithArrangeShipsF)
 {
 	for(int quantity_of_decks_ = 4, quantity_of_ships_ = 1; quantity_of_decks_ >= 1; --quantity_of_decks_, ++quantity_of_ships_)
 	{
@@ -174,7 +241,7 @@ void ArrangeShips(std::vector<std::vector<char>>& my_field, int rows, int column
 			case 4: std::cout << "four";
 		}
 		std::cout << " - deck ship!" << std::endl;
-		AlgorithArrangeShips(my_field, rows, columns, quantity_of_ships_, quantity_of_decks_, IsNearHereAnotherShips, IsPartOfShip);
+		AlgorithArrangeShipsF(my_field, rows, columns, quantity_of_ships_, quantity_of_decks_, IsNearHereAnotherShips, IsPartOfShip, ShowField);
 	}
 }
 
@@ -193,8 +260,9 @@ void ArrangeShips(std::vector<std::vector<char>>& my_field, int rows, int column
 
 void Game()
 {
-	do
-	{
+	//do
+	//{
+	// 
 		//my step ( arguments  :    bool  HIT_LI_IN_ GOAL()    bool   IS_LI_INCER(), )
 		//display:
 		// 1. if  hasnt  hit
@@ -206,7 +274,9 @@ void Game()
 		// 2. if  has hit, RECURSION
 		//
 
-	} while(ЕСТЬ_ЛИ_ПОБЕДИТЕЛЬ(аргументы));
+
+	//} while(IaThereAWinner(arguments));
+	//} while(ЕСТЬ_ЛИ_ПОБЕДИТЕЛЬ(аргументы));
 	
 
 }

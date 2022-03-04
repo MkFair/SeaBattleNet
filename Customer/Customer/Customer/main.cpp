@@ -12,7 +12,7 @@ int main()
     customer_field = InitField(row, column);
     enemy_field = InitField(row, column);
     ShowField(customer_field, row, column);
-    ArrangeShips(customer_field, row, column);
+    ArrangeShips(customer_field, row, column, AlgorithArrangeShips);
 
     void Game();
 
