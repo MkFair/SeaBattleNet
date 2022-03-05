@@ -31,3 +31,42 @@ SOCKET create_socket() {
     }
     return s;
 }
+
+std::vector<char> to_raw_coordinate(ShipPosition sp) {
+    std::vector<char> raw_data;
+    raw_data.resize(sizeof(short) * 4);
+    std::cout << "encode size " << raw_data.size();
+    std::stringstream ss;
+    ss.write((char*)&sp.min_pos.first, sizeof(short));
+    ss.write((char*)&sp.min_pos.second, sizeof(short));
+    ss.write((char*)&sp.max_pos.first, sizeof(short));
+    ss.write((char*)&sp.max_pos.second, sizeof(short));
+    
+    ss.read(raw_data.data(), raw_data.size());
+    return raw_data;
+}
+
+
+//Передача данных о корабле на сервер
+// param s сетевой сокет клиента
+// param ship_info список координат палуб корабля
+void add_ship(SOCKET s,std::vector<std::vector<int>> ship_info) {
+    std::pair<short, short> min_pos,max_pos;
+    min_pos = { ship_info[0][0],ship_info[0][1] };
+    max_pos = { 0,0 };
+    //вычисляем максимальную и минимальную точку корабля
+    for (auto v_pos : ship_info) {
+        if(v_pos[0]< min_pos.first)
+            min_pos.first = v_pos[0];
+        if (v_pos[1] < min_pos.second)
+            min_pos.second = v_pos[1];
+        if (v_pos[0] > max_pos.first)
+            max_pos.first = v_pos[0];
+        if (v_pos[1] > max_pos.second)
+            max_pos.second = v_pos[1];
+    }
+    std::cout << "I send next position "<< min_pos.first<<":"<< min_pos.second;
+    ShipPosition sp = { min_pos,max_pos };
+    std::vector<char> raw_data = to_raw_coordinate(sp);
+    send(s, raw_data.data(), raw_data.size(), 0);
+}

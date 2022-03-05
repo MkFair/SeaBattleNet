@@ -10,7 +10,10 @@ int main()
     int u = connect(s, (sockaddr*)&saddr,sizeof(sockaddr));
     if (u == SOCKET_ERROR) {
         std::cerr << "Error client: " << WSAGetLastError();
+        return 1;
     }
+    std::vector<std::vector<int>> posv{ {1,2}, {2,2}, {5,3} };
+    add_ship(s, posv);
 
     int row = 10;
 
