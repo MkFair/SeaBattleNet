@@ -1,4 +1,5 @@
 #include "network.h"
+
 WSADATA windows_init() {
     WSADATA wsadata;
     auto iResult = WSAStartup(MAKEWORD(2, 2), &wsadata);

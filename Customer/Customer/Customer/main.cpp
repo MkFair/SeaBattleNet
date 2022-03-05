@@ -7,6 +7,10 @@ int main()
     windows_init();
     sockaddr_in saddr = saddr_init();
     SOCKET s = create_socket();
+    int u = connect(s, (sockaddr*)&saddr,sizeof(sockaddr));
+    if (u == SOCKET_ERROR) {
+        std::cerr << "Error client: " << WSAGetLastError();
+    }
 
     int row = 10;
 
