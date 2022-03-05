@@ -1,8 +1,13 @@
 #include <iostream>
 #include "customer_functoins.h"
+#include "network.h"
 
 int main()
 {
+    windows_init();
+    sockaddr_in saddr = saddr_init();
+    SOCKET s = create_socket();
+
     int row = 10;
 
     int column = 10;

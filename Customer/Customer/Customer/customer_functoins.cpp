@@ -146,7 +146,8 @@ bool CheckSequence(int quantity_of_deck, std::vector<std::vector<int>> my_ship, 
 }
 void EnterCoordinate(int& coordinate)
 {
-	while (!std::cin >> coordinate || coordinate > 10 || coordinate <= 0)
+	std::cin >> coordinate;
+	while (!coordinate || coordinate > 10 || coordinate <= 0)
 	{
 		if (!std::cin)
 		{
@@ -154,7 +155,9 @@ void EnterCoordinate(int& coordinate)
 			std::cin.ignore(100, '\n');
 		}
 		std::cin.ignore(100, '\n');
+		std::cin >> coordinate;
 	}
+	std::cout << "you inter " << coordinate<<std::endl;
 	--coordinate;//преобразуем для вектора данные нат -1
 }
 

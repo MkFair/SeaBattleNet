@@ -42,14 +42,8 @@ int main()
     sockaddr_in saddr_cl;
     int saddr_len = sizeof(sockaddr);
 
-
-
-    WSADATA wsadata;
-    auto iResult = WSAStartup(MAKEWORD(2, 2), &wsadata);
-    if (iResult != NO_ERROR) {
-        wprintf(L"WSAStartup failed with error: %ld\n", iResult);
-
-    }
+    WSADATA wsadata = windows_init();
+    
 
 
     sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
