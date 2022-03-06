@@ -1,11 +1,36 @@
 #include <Winsock2.h>
 #include <ws2tcpip.h>
 #include <iostream>
+#include <sstream>
 #include <vector>
 #include "server_functions.h"
 
 #define LISTEN_PORT 5445
 
+struct ShipPosition {
+    std::pair<short, short> min_pos, max_pos;
+};
+
+ShipPosition from_raw_data(std::vector<char>raw_data) {
+    std::stringstream ss;
+    raw_data.resize(sizeof(short) * 4);
+    std::cout << "raw data " << raw_data.data();
+    ss.write(raw_data.data(), raw_data.size());
+    ShipPosition sp;
+    ss.seekg(0);
+    //ss>>sp.min_pos.first;
+    ss.read((char*)&sp.min_pos.first, sizeof(short));
+    ss.seekg(sizeof(short));
+    std::cout << "tell size " << sp.min_pos.first;
+    ss.read((char*)&sp.min_pos.second, sizeof(short));
+    ss.seekg(sizeof(short)*2);
+    
+    ss.read((char*)&sp.max_pos.first, sizeof(short));
+    ss.seekg(sizeof(short)*3);
+    
+    ss.read((char*)&sp.max_pos.second, sizeof(short));
+    return sp;
+}
 
 WSADATA windows_init() {
     WSADATA wsadata;
@@ -78,7 +103,8 @@ int main()
         std::string bufstr(buf.begin(), buf.end());
         std::cout << "Client send me next data:" << bufstr << std::endl;
 
-
+        ShipPosition sp = from_raw_data(buf);
+        std::cout << "Client send me next position ship: x1=" << sp.min_pos.first <<" y1=" << sp.min_pos.second << "x2=" << sp.max_pos.first << " y2=" << sp.max_pos.second << std::endl;
 
         std::string responce = "HELLO KITTI";
         send(s_cl, responce.data(), responce.size(), 0);
