@@ -2,12 +2,16 @@
 #include <vector>
 #include "customer_functoins.h"
 
-std::vector<std::vector<char>> InitField(int rows, int columns)
-{
-	std::vector<std::vector<char>> my_field(10, std::vector<char>(10));
+extern const int ROW;
 
-	for (int i = 0; i < rows; ++i)
-		for (int j = 0; j < columns; ++j)
+extern const int COLUMN;
+
+std::vector<std::vector<char>> InitField()
+{
+	std::vector<std::vector<char>> my_field(ROW, std::vector<char>(COLUMN));
+
+	for (int i = 0; i < ROW; ++i)
+		for (int j = 0; j < COLUMN; ++j)
 			my_field[i][j] = 'O';
 
 	return my_field;
@@ -20,12 +24,12 @@ std::vector<std::vector<char>> InitField(int rows, int columns)
 //std::cout << '\t' << i;
 //std::cout << std::endl;
 
-void ShowField(const std::vector<std::vector<char>>& my_field, int rows, int columns)
+void ShowField(const std::vector<std::vector<char>>& my_field)
 {
 	//std::cout << "\tYOUR FIELD\t\t\t\tENEMY`S FIELD" << std::endl;
-	std::cout << "\tYOUR FIELD" << std::endl;
+	std::cout << std::endl << "\tYOUR FIELD" << std::endl;
 
-	for (int i = 1; i <= columns; ++i)
+	for (int i = 1; i <= COLUMN; ++i)
 	{
 		if (i == 1) std::cout << "    " << i;
 		else std::cout << "  " << i;
@@ -33,10 +37,10 @@ void ShowField(const std::vector<std::vector<char>>& my_field, int rows, int col
 
 	std::cout << std::endl;
 
-	for (int i = 0; i < rows; ++i)
+	for (int i = 0; i < ROW; ++i)
 	{
 		std::cout << i + 1;
-		for (int j = 0; j < columns; ++j)
+		for (int j = 0; j < COLUMN; ++j)
 		{
 			if (i != 9  && j == 0) std::cout << "   " << my_field[i][j];
 			else std::cout << "  " << my_field[i][j];
@@ -169,7 +173,7 @@ bool IsPartOfShip(std::vector<std::vector<int>>& this_ship, int row_number_, int
 	return false;
 }
 
-bool IsNearHereAnotherShips(std::vector<std::vector<char>>& my_field, int rows, int columns, int row_number_, int column_number_)
+bool IsNearHereAnotherShips(std::vector<std::vector<char>>& my_field, int row_number_, int column_number_)
 { 
 	//ПРОВЕРКА НЕТ ЛИ РЯДОМ ДРУГИХ КОРАБЛЕЙ
 	// ЕСЛИ ПАЛУБА РЯДОМ С ДРУГИМ КОРАБЛЕМ return true;
@@ -185,7 +189,8 @@ bool IsNearHereAnotherShips(std::vector<std::vector<char>>& my_field, int rows, 
 
 	return false;
 }
-void AlgorithArrangeShips(std::vector<std::vector<char>>& field, int field_rows, int field_columns, int quantity_of_ships, int quantity_of_decks, IsNearHereAnotherShips_t IsNearHereAnotherShipsF, IsPartOfShip_t IsPartOfShipF, ShowField_t ShowFieldF)
+
+void AlgorithArrangeShips(std::vector<std::vector<char>>& field, int quantity_of_ships, int quantity_of_decks, IsNearHereAnotherShips_t IsNearHereAnotherShipsF, IsPartOfShip_t IsPartOfShipF, ShowField_t ShowFieldF)
 {
 	int row_number;
 
@@ -209,7 +214,7 @@ void AlgorithArrangeShips(std::vector<std::vector<char>>& field, int field_rows,
 				EnterCoordinate(column_number);
 
 				//ПРОВЕРКА НЕТ ЛИ РЯДОМ ДРУГИХ КОРАБЛЕЙ. 
-				if (field[row_number][column_number] == 'k' || (IsPartOfShipF(ship, row_number, column_number) && IsNearHereAnotherShipsF(field, field_rows, field_columns, row_number, column_number)))//если уже там стоит корабль или если рядом уже стоял корабль
+				if (field[row_number][column_number] == 'k' || (IsPartOfShipF(ship, row_number, column_number) && IsNearHereAnotherShipsF(field, row_number, column_number)))//если уже там стоит корабль или если рядом уже стоял корабль
 				{
 					std::cout << "There is already part of a ship or a ship in this cell or near here." << std::endl;
 					std::cout << "Please try again to enter cell coordinates." << std::endl;
@@ -227,11 +232,11 @@ void AlgorithArrangeShips(std::vector<std::vector<char>>& field, int field_rows,
 		for(int i = 0; i < quantity_of_decks; ++i)//loop for a decks of the ship
 			field[  ship[i][0]  ][  ship[i][1]  ] = 'k';
 		//show field
-		ShowFieldF(field, field_rows, field_columns);
+		ShowFieldF(field);
 	}
 }
 
-void ArrangeShips(std::vector<std::vector<char>>& my_field, int rows, int columns, AlgorithArrangeShips_t AlgorithArrangeShipsF)
+void ArrangeShips(std::vector<std::vector<char>>& my_field, AlgorithArrangeShips_t AlgorithArrangeShipsF)
 {
 	for(int quantity_of_decks_ = 4, quantity_of_ships_ = 1; quantity_of_decks_ >= 1; --quantity_of_decks_, ++quantity_of_ships_)
 	{
@@ -244,7 +249,7 @@ void ArrangeShips(std::vector<std::vector<char>>& my_field, int rows, int column
 			case 4: std::cout << "four";
 		}
 		std::cout << " - deck ship!" << std::endl;
-		AlgorithArrangeShipsF(my_field, rows, columns, quantity_of_ships_, quantity_of_decks_, IsNearHereAnotherShips, IsPartOfShip, ShowField);
+		AlgorithArrangeShipsF(my_field, quantity_of_ships_, quantity_of_decks_, IsNearHereAnotherShips, IsPartOfShip, ShowField);
 	}
 }
 
