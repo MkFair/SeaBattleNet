@@ -68,5 +68,32 @@ void add_ship(SOCKET s,std::vector<std::vector<int>> ship_info) {
     std::cout << "I send next position "<< min_pos.first<<":"<< min_pos.second;
     ShipPosition sp = { min_pos,max_pos };
     std::vector<char> raw_data = to_raw_coordinate(sp);
-    send(s, raw_data.data(), raw_data.size(), 0);
+    send_packet(s, PacketTypes::ADD_SHIPS, raw_data);
+}
+void send_packet(SOCKET s, PacketTypes packet_type, std::vector<char>data) {
+    std::stringstream ss;
+    std::vector<char> raw_packet;
+    raw_packet.resize(sizeof(short));
+    
+
+    ss.write((char*)&packet_type, sizeof(short));
+    ss.read(raw_packet.data(), sizeof(short));
+
+    raw_packet.insert(raw_packet.end(), data.begin(), data.end());
+    std::cout << "I send packet size " << raw_packet.size() << std::endl;
+    send(s, raw_packet.data(), raw_packet.size(), 0);
+}
+bool is_wait_state(SOCKET s) {
+    short type = PacketTypes::WAIT_PLAYER;
+
+    int size = recv(s, (char*)&type, sizeof(short), 0);
+    if (size == sizeof(short) and type == PacketTypes::ARRANGEMENT_SHIPS) {
+        return false;
+    }
+    return true;
+}
+void wait_player(SOCKET s,std::chrono::milliseconds delay) {
+    while (is_wait_state(s)) {
+        std::this_thread::sleep_for(delay);
+    }
 }
