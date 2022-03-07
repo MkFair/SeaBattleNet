@@ -29,8 +29,8 @@ int main()
     enemy_field = InitField();
     ShowField(customer_field);
     ArrangeShips(customer_field, AlgorithArrangeShips);
-
-    void Game();
+    Game(customer_field, enemy_field, HaveHitTheTarget, AreThereAnySheeps);
+    Results(customer_field, enemy_field, AreThereAnySheeps);
 
 	return 0;
 }

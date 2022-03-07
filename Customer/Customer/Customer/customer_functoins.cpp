@@ -161,7 +161,7 @@ void EnterCoordinate(int& coordinate)
 		std::cin.ignore(100, '\n');
 		std::cin >> coordinate;
 	}
-	std::cout << "you inter " << coordinate<<std::endl;
+	std::cout << "you have entered " << coordinate<<std::endl;
 	--coordinate;//преобразуем для вектора данные нат -1
 }
 
@@ -190,12 +190,21 @@ bool IsNearHereAnotherShips(std::vector<std::vector<char>>& my_field, int row_nu
 	return false;
 }
 
-void AlgorithArrangeShips(std::vector<std::vector<char>>& field, int quantity_of_ships, int quantity_of_decks, IsNearHereAnotherShips_t IsNearHereAnotherShipsF, IsPartOfShip_t IsPartOfShipF, ShowField_t ShowFieldF)
+void AlgorithArrangeShips(std::vector<std::vector<char>>& field, int quantity_of_decks, IsNearHereAnotherShips_t IsNearHereAnotherShipsF, IsPartOfShip_t IsPartOfShipF, ShowField_t ShowFieldF)
 {
 	int row_number;
 
 	int column_number;
 
+	int quantity_of_ships;
+
+	switch (quantity_of_decks)
+	{
+		case 1: quantity_of_ships = 4; break;
+		case 2: quantity_of_ships = 3; break;
+		case 3: quantity_of_ships = 2; break;
+		case 4: quantity_of_ships = 1; break;
+	}
 	for (int i = 0; i < quantity_of_ships; ++i)// a loop of entering ships  цикл введения кораблей
 	{
 		std::vector<std::vector<int>> ship(quantity_of_decks, std::vector<int>(2)); //создаем вектор c координатами координат одного корабля
@@ -205,7 +214,7 @@ void AlgorithArrangeShips(std::vector<std::vector<char>>& field, int quantity_of
 
 		do
 		{
-			for (int i = 1; i <= quantity_of_decks; ++i)// ПРОХОДИМ ПО КАЖДОЙ ПАЛУБЕ
+			for (int i = 0; i < quantity_of_decks; ++i)// ПРОХОДИМ ПО КАЖДОЙ ПАЛУБЕ
 			{
 				std::cout << "Enter a row:";
 				EnterCoordinate(row_number);
@@ -214,16 +223,27 @@ void AlgorithArrangeShips(std::vector<std::vector<char>>& field, int quantity_of
 				EnterCoordinate(column_number);
 
 				//ПРОВЕРКА НЕТ ЛИ РЯДОМ ДРУГИХ КОРАБЛЕЙ. 
-				if (field[row_number][column_number] == 'k' || (IsPartOfShipF(ship, row_number, column_number) && IsNearHereAnotherShipsF(field, row_number, column_number)))//если уже там стоит корабль или если рядом уже стоял корабль
+				if (field[row_number][column_number] == 'k' || IsPartOfShipF(ship, row_number, column_number)  )//если уже там стоит корабль или если рядом уже стоял корабль
 				{
-					std::cout << "There is already part of a ship or a ship in this cell or near here." << std::endl;
+					std::cout << "There is already a ship on the field in this cell." << std::endl;
+					std::cout << "Please try again to enter cell coordinates." << std::endl;
+					--i;
+				} 
+				else if (IsPartOfShipF(ship, row_number, column_number))
+				{
+					std::cout << "You enter the same cell." << std::endl;
 					std::cout << "Please try again to enter cell coordinates." << std::endl;
 					--i;
 				}
-				else //в вектор координат корабля записываем координаты текущей палубы
+				else if (  IsNearHereAnotherShipsF(field, row_number, column_number)  )
 				{
-					ship[i - 1][0] = row_number;
-					ship[i - 1][1] = column_number;
+					std::cout << "Sorry, you can`t place here a deck of a ship. There is another ships in the field near here." << std::endl;
+					std::cout << "Please try again to enter cell coordinates." << std::endl;
+					--i;
+				} else //в вектор координат корабля записываем координаты текущей палубы
+				{
+					ship[i][0] = row_number;
+					ship[i][1] = column_number;
 				}
 			}
 		} while(CheckSequence(quantity_of_decks, ship, AreCellsArrangedHorizontallySuccessively, AreCellsArrangedVerticallySuccessively)); //проверка ПОЛНОЦЕННЫЙ ЛИ КОРАБЛЬ
@@ -238,7 +258,7 @@ void AlgorithArrangeShips(std::vector<std::vector<char>>& field, int quantity_of
 
 void ArrangeShips(std::vector<std::vector<char>>& my_field, AlgorithArrangeShips_t AlgorithArrangeShipsF)
 {
-	for(int quantity_of_decks_ = 4, quantity_of_ships_ = 1; quantity_of_decks_ >= 1; --quantity_of_decks_, ++quantity_of_ships_)
+	for(int quantity_of_decks_ = 4; quantity_of_decks_ >= 1; --quantity_of_decks_)
 	{
 		std::cout << "Arange ";
 		switch (quantity_of_decks_)
@@ -248,43 +268,77 @@ void ArrangeShips(std::vector<std::vector<char>>& my_field, AlgorithArrangeShips
 			case 3: std::cout << "three";
 			case 4: std::cout << "four";
 		}
-		std::cout << " - deck ship!" << std::endl;
-		AlgorithArrangeShipsF(my_field, quantity_of_ships_, quantity_of_decks_, IsNearHereAnotherShips, IsPartOfShip, ShowField);
+		if (quantity_of_decks_ != 4) 
+			std::cout << " - deck ships!" << std::endl;
+		else 
+			std::cout << " - deck ship!" << std::endl;
+
+		AlgorithArrangeShipsF(my_field, quantity_of_decks_, IsNearHereAnotherShips, IsPartOfShip, ShowField);
 	}
 }
 
 //bool все_ли_мои корабли_повержены(std::vector<std::vector<char>>&  мое поле){}
 //bool все_ли_корабли_врага_повержены(std::vector<std::vector<char>>&  поле врага){}
 
-//bool ЕСТЬ_ЛИ_ПОБЕДИТЕЛЬ(std::vector<std::vector<char>>& поле мое, std::vector<std::vector<char>>& поле врага, все_мои корабли_повержены,  все_корабли_врага_повержены)
-//{ все_мои корабли_повержены  ||  все_корабли_врага_повержены  }
-
-//void мой_шаг(std::vector<std::vector<char>>&  поле врага, ПОПАЛ_ЛИ_В_ЦЕЛЬ(),  ЕСТЬ_ЛИ_ПОБЕДИТЕЛЬ() )
-//{
-//шаг
-// if ( !ПОПАЛ_ЛИ_В_ЦЕЛЬ() || ( ПОПАЛ_ЛИ_В_ЦЕЛЬ() &&  ЕСТЬ_ЛИ_ПОБЕДИТЕЛЬ() )    ) { break; }
-// if else (ПОПАЛ_ЛИ_В_ЦЕЛЬ() && ! ЕСТЬ_ЛИ_ПОБЕДИТЕЛЬ() ) мой_шаг(); РЕКУРСИЯ
-//}
-
-void Game()
+bool AreAllEnemyShipsSunked(const std::vector<std::vector<char>>& some_field)
 {
-	//do
-	//{
-	// 
-		//my step ( arguments  :    bool  HIT_LI_IN_ GOAL()    bool   IS_LI_INCER(), )
-		//display:
-		// 1. if  hasnt  hit
-		// 2. if you have  hit and completely sank the ship. RECURSION
-		// 3. if you hit and did not completely sink the ship. RECURSION
-		// if (THERE IS A WINNER()) break;
-		//enemy step from the server
-		// 1. if  hasnt  hit
-		// 2. if  has hit, RECURSION
-		//
+	for (int i = 0; i < ROW; ++i)
+		for (int j = 0; j < COLUMN; ++j)
+			if (some_field[i][j] == 'k') return false;
+	return true;
+}
 
+bool HaveHitTheTarget(std::vector<std::vector<char>>& field, int row_number_, int column_number_, ShowField_t ShowFieldF)
+{
+	if (field[row_number_][column_number_] == 'k')
+		field[row_number_][column_number_] = 'p';// HAVE HIT THE TARGET   ПОПАЛ
+	else field[row_number_][column_number_] = 'm';//HAVE MISSED    ПРОМАХНУЛСЯ
 
-	//} while(IaThereAWinner(arguments));
-	//} while(ЕСТЬ_ЛИ_ПОБЕДИТЕЛЬ(аргументы));
-	
+	ShowFieldF(field);
 
+	if (field[row_number_][column_number_] == 'm') return false;
+	else return true;
+}
+
+bool AreThereAnySheeps(std::vector<std::vector<char>>& field)
+{
+	for (int i = 0; i < ROW; ++i)
+		for (int j = 0; j < COLUMN; ++j)
+			if (field[i][j] == 'k') return true;
+	return false;
+}
+
+void Step(std::vector<std::vector<char>>& some_field, HaveHitTheTarget_t HaveHitTheTargetF, AreThereAnySheeps_t AreThereAnySheepsF)
+{
+	int row_number;
+
+	int column_number;
+
+	do
+	{
+		std::cout << "Enter a row:";
+		EnterCoordinate(row_number);
+		std::cout << "Enter a column:";
+		EnterCoordinate(column_number);
+	} while(   HaveHitTheTargetF(some_field, row_number, column_number, ShowField) && AreThereAnySheepsF(some_field)   );
+}
+
+void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_, HaveHitTheTarget_t HaveHitTheTargetF, AreThereAnySheeps_t AreThereAnySheepsF)
+{
+	while(true) // the eternal loop
+	{
+		Step(customer_field_, HaveHitTheTargetF, AreThereAnySheepsF); // STEP OF ENEMY
+		if (!AreThereAnySheepsF(customer_field_)) break;
+		Step(enemy_field_, HaveHitTheTargetF, AreThereAnySheepsF); // STEP OF THE CUSTOMER
+		if (!AreThereAnySheepsF(enemy_field_)) break;
+	}
+}
+
+void Results(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_, AreThereAnySheeps_t AreThereAnySheepsF)
+{
+	if (AreThereAnySheepsF(customer_field_))
+		std::cout << "You are a winner. Congratulations!" << std::endl;
+	else 
+		std::cout << "You are a looser. ";
+	std::cout << "Bye." << std::endl;
 }
