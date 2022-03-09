@@ -28,7 +28,12 @@ int main()
     customer_field = InitField();
     enemy_field = InitField();
     ShowField(customer_field);
-    ArrangeShips(customer_field, AlgorithArrangeShips);
+    
+
+    ArrangeONEShip(customer_field, AlgorithmArrangeShips);// A FUNC ONLY FOR TEST
+    //ArrangeShips(customer_field, AlgorithmArrangeShips);// A REAL FUNC
+
+
     Game(customer_field, enemy_field, HaveHitTheTarget, AreThereAnySheeps);
     Results(customer_field, enemy_field, AreThereAnySheeps);
 
