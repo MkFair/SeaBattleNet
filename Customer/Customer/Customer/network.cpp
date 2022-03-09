@@ -74,26 +74,68 @@ void send_packet(SOCKET s, PacketTypes packet_type, std::vector<char>data) {
     std::stringstream ss;
     std::vector<char> raw_packet;
     raw_packet.resize(sizeof(short));
-    
-
     ss.write((char*)&packet_type, sizeof(short));
     ss.read(raw_packet.data(), sizeof(short));
-
-    raw_packet.insert(raw_packet.end(), data.begin(), data.end());
+    if(!data.empty())
+        raw_packet.insert(raw_packet.end(), data.begin(), data.end());
     std::cout << "I send packet size " << raw_packet.size() << std::endl;
     send(s, raw_packet.data(), raw_packet.size(), 0);
 }
-bool is_wait_state(SOCKET s) {
-    short type = PacketTypes::WAIT_PLAYER;
-
-    int size = recv(s, (char*)&type, sizeof(short), 0);
-    if (size == sizeof(short) and type == PacketTypes::ARRANGEMENT_SHIPS) {
-        return false;
-    }
-    return true;
+std::pair<PacketTypes,std::vector<char>> recv_packet(SOCKET s){
+    std::vector<char> raw_packet;
+    raw_packet.resize(1024);
+    recv(s, raw_packet.data(), raw_packet.size(),0);
+    std::stringstream ss;
+    ss.write(raw_packet.data(), sizeof(short));
+    PacketTypes type;
+    ss.read((char*)&type,sizeof(short));
+    raw_packet.erase(raw_packet.begin(), raw_packet.begin()+ sizeof(short));
+    return std::pair<PacketTypes, std::vector<char>>(type, raw_packet);
 }
+
+bool is_wait_state(SOCKET s) {
+    return wait_event(s, PacketTypes::ARRANGEMENT_SHIPS);
+}
+//ожидание подключения второго игрока
 void wait_player(SOCKET s,std::chrono::milliseconds delay) {
     while (is_wait_state(s)) {
         std::this_thread::sleep_for(delay);
     }
+}
+
+std::pair<PacketTypes, std::vector<char>> check_state(SOCKET s) {
+    send_packet(s, PacketTypes::CHECK_STATE, std::vector<char>());
+    return recv_packet(s);
+}
+//отправка координат выстрела
+void send_firing_zone(SOCKET s,short x,short y) {
+    std::vector<char> data;
+    std::stringstream ss;
+    ss.write((char*)&x,sizeof(short));
+    ss.write((char*)&y,sizeof(short));
+    ss.read(data.data(), sizeof(short)*2);
+    send_packet(s, PacketTypes::FIRE, data);
+}
+//ожидание сообщения о старте игры, возвращает PacketTypes
+PacketTypes wait_start_game(SOCKET s, std::chrono::milliseconds delay) {
+    std::pair<PacketTypes, std::vector<char>> data = check_state(s);
+    while (data.first!= PacketTypes::START_GAME) {
+        std::this_thread::sleep_for(delay);
+        data = check_state(s);
+    }
+    PacketTypes result;
+    std::stringstream ss;
+    ss.write(data.second.data(),sizeof(short));
+    ss.read((char*)&result,sizeof(short));
+    return result;
+}
+bool wait_event(SOCKET s ,PacketTypes check_type) {
+    short type;
+
+    int size = recv(s, (char*)&type, sizeof(short), 0);
+    if (size == sizeof(short) and type == check_type) {
+        return false;
+    }
+    return true;
+
 }
