@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "customer_functoins.h"
+#include "network.h"
 
 extern const int ROW;
 
@@ -190,7 +191,7 @@ bool IsNearHereAnotherShips(std::vector<std::vector<char>>& my_field, int row_nu
 	return false;
 }
 
-void AlgorithArrangeShips(std::vector<std::vector<char>>& field, int quantity_of_decks, IsNearHereAnotherShips_t IsNearHereAnotherShipsF, IsPartOfShip_t IsPartOfShipF, ShowField_t ShowFieldF)
+void AlgorithmArrangeShips(std::vector<std::vector<char>>& field, int quantity_of_decks, IsNearHereAnotherShips_t IsNearHereAnotherShipsF, IsPartOfShip_t IsPartOfShipF, ShowField_t ShowFieldF)
 {
 	int row_number;
 
@@ -251,12 +252,16 @@ void AlgorithArrangeShips(std::vector<std::vector<char>>& field, int quantity_of
 		//ЗАПИСЫВАЕМ КОРАБЛЬ НА ПОЛЕ
 		for(int i = 0; i < quantity_of_decks; ++i)//loop for a decks of the ship
 			field[  ship[i][0]  ][  ship[i][1]  ] = 'k';
+
+		//SENT ON SERVER SHIP VECTOR
+		
+
 		//show field
 		ShowFieldF(field);
 	}
 }
 
-void ArrangeShips(std::vector<std::vector<char>>& my_field, AlgorithArrangeShips_t AlgorithArrangeShipsF)
+void ArrangeShips(std::vector<std::vector<char>>& my_field, AlgorithmArrangeShips_t AlgorithmArrangeShipsF)
 {
 	for(int quantity_of_decks_ = 4; quantity_of_decks_ >= 1; --quantity_of_decks_)
 	{
@@ -273,12 +278,26 @@ void ArrangeShips(std::vector<std::vector<char>>& my_field, AlgorithArrangeShips
 		else 
 			std::cout << " - deck ship!" << std::endl;
 
-		AlgorithArrangeShipsF(my_field, quantity_of_decks_, IsNearHereAnotherShips, IsPartOfShip, ShowField);
+		AlgorithmArrangeShipsF(my_field, quantity_of_decks_, IsNearHereAnotherShips, IsPartOfShip, ShowField);
 	}
 }
 
-//bool все_ли_мои корабли_повержены(std::vector<std::vector<char>>&  мое поле){}
-//bool все_ли_корабли_врага_повержены(std::vector<std::vector<char>>&  поле врага){}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///ONLY FOR TEST///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void ArrangeONEShip(std::vector<std::vector<char>>& my_field, AlgorithmArrangeShips_t AlgorithmArrangeShipsF)
+{
+	
+		std::cout << "Arange four - deck ship!" << std::endl;
+
+		AlgorithmArrangeShipsF(my_field, 4, IsNearHereAnotherShips, IsPartOfShip, ShowField);
+	
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///ONLY FOR TEST///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 bool AreAllEnemyShipsSunked(const std::vector<std::vector<char>>& some_field)
 {
