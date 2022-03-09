@@ -51,21 +51,39 @@ void ShowField(const std::vector<std::vector<char>>& my_field)
 
 
 }
-bool AreCellsArrangedHorizontallySuccessively(std::vector<std::vector<int>> ship, int quantity_of_deck_)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//CHECK/OF/SHIPS////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool AreChosenCoordinateSame(std::vector<std::vector<int>> the_ship, int quantity_of_deck, bool is_horisontal)
 {
+	if (is_horisontal)
+	{
+		for (int i = 1; i < quantity_of_deck; ++i)
+			if (the_ship[0][1] != the_ship[i][1]) return false;
+			else return true;
+	} else
+	{
+		for (int i = 1; i < quantity_of_deck; ++i)
+			if (the_ship[0][0] != the_ship[i][0]) return false;
+			else return true;
+	}
+}
+
+bool AreCellsArrangedHorizontallySuccessively(std::vector<std::vector<int>> ship, int quantity_of_deck_, AreChosenCoordinateSame_t AreChosenCoordinateSameF)
+{
+	//Y  ARE THE SAME
+	if (  !AreChosenCoordinateSameF(ship, quantity_of_deck_, true)  ) return false;
+
 	switch (quantity_of_deck_)
 	{
 		case 1: return true; break;
-		case 2: if (ship[0][1] == ship[1][1] && (ship[0][1] + 1 == ship[1][1] || ship[0][1] - 1 == ship[1][1])) return true;
-		case 3: if (ship[0][1] == ship[1][1] && ship[2][1] == ship[1][1]  && 
-				   ((ship[0][0] + 1 == ship[1][0] && ship[0][0] + 2 == ship[2][0] )  ||  
+		case 2: if (ship[0][0] + 1 == ship[1][0] || ship[0][0] - 1 == ship[1][0]) return true;
+		case 3: if ((ship[0][0] + 1 == ship[1][0] && ship[0][0] + 2 == ship[2][0] )  ||  
 					(ship[0][0] - 1 == ship[1][0] && ship[0][0] + 1 == ship[2][0] )  ||
 					(ship[0][0] + 1 == ship[2][0] && ship[2][0] + 1 == ship[1][0] )  ||
 					(ship[0][0] - 1 == ship[1][0] && ship[2][0] + 1 == ship[0][0] )  ||
 					(ship[2][0] + 1 == ship[0][0] && ship[0][0] + 1 == ship[1][0] )  ||
-					(ship[2][0] + 1 == ship[1][0] && ship[1][0] + 1 == ship[0][0]))) return true;
-		case 4: if (ship[0][1] == ship[1][1] && ship[2][1] == ship[1][1] && ship[2][1] == ship[3][1] &&
-				  ((ship[0][0] + 1 == ship[1][0] && ship[0][0] + 2 == ship[2][0] && ship[0][0] + 3 == ship[3][0]) ||
+					(ship[2][0] + 1 == ship[1][0] && ship[1][0] + 1 == ship[0][0] )) return true;
+		case 4: if ((ship[0][0] + 1 == ship[1][0] && ship[0][0] + 2 == ship[2][0] && ship[0][0] + 3 == ship[3][0]) ||
 				   (ship[0][0] + 1 == ship[1][0] && ship[0][0] + 2 == ship[3][0] && ship[0][0] + 3 == ship[2][0]) ||
 				   (ship[0][0] + 1 == ship[3][0] && ship[0][0] + 2 == ship[1][0] && ship[0][0] + 3 == ship[2][0]) ||
 				   (ship[0][0] + 1 == ship[3][0] && ship[0][0] + 2 == ship[2][0] && ship[0][0] + 3 == ship[1][0]) ||
@@ -91,26 +109,27 @@ bool AreCellsArrangedHorizontallySuccessively(std::vector<std::vector<int>> ship
 				   (ship[2][0] + 1 == ship[1][0] && ship[2][0] + 2 == ship[0][0] && ship[3][0] + 3 == ship[3][0]) ||
 				   (ship[2][0] + 1 == ship[1][0] && ship[2][0] + 2 == ship[3][0] && ship[3][0] + 3 == ship[0][0]) ||
 				   (ship[2][0] + 1 == ship[3][0] && ship[2][0] + 2 == ship[1][0] && ship[3][0] + 3 == ship[0][0]) ||
-				   (ship[2][0] + 1 == ship[3][0] && ship[2][0] + 2 == ship[0][0] && ship[3][0] + 3 == ship[1][0]))) return true;
+				   (ship[2][0] + 1 == ship[3][0] && ship[2][0] + 2 == ship[0][0] && ship[3][0] + 3 == ship[1][0])) return true;
 	}
 	return false;
 }
 
-bool AreCellsArrangedVerticallySuccessively(std::vector<std::vector<int>> ship, int quantity_of_deck_)
+bool AreCellsArrangedVerticallySuccessively(std::vector<std::vector<int>> ship, int quantity_of_deck_, AreChosenCoordinateSame_t AreChosenCoordinateSameF)
 {
+	//X  ARE THE SAME
+	if (!AreChosenCoordinateSameF(ship, quantity_of_deck_, false)) return false;
+
 	switch (quantity_of_deck_)
 	{
 		case 1: return true; break;
-		case 2: if (ship[0][0] == ship[1][0] && (ship[0][1] + 1 == ship[1][1] || ship[0][1] - 1 == ship[1][1])) return true;
-		case 3: if (ship[0][0] == ship[1][0] && ship[2][0] == ship[1][0] &&
-				  ((ship[0][1] + 1 == ship[1][1] && ship[0][1] + 2 == ship[2][1]) ||
+		case 2: if (ship[0][1] + 1 == ship[1][1] || ship[0][1] - 1 == ship[1][1]) return true;
+		case 3: if ((ship[0][1] + 1 == ship[1][1] && ship[0][1] + 2 == ship[2][1]) ||
 					(ship[0][1] - 1 == ship[1][1] && ship[0][1] + 1 == ship[2][1]) ||
 					(ship[0][1] + 1 == ship[2][1] && ship[2][1] + 1 == ship[1][1]) ||
 					(ship[0][1] - 1 == ship[1][1] && ship[2][1] + 1 == ship[0][1]) ||
 					(ship[2][1] + 1 == ship[0][1] && ship[0][1] + 1 == ship[1][1]) ||
-					(ship[2][1] + 1 == ship[1][1] && ship[1][1] + 1 == ship[0][1]))) return true;
-		case 4: if (ship[0][0] == ship[1][0] && ship[2][0] == ship[1][0] && ship[2][0] == ship[3][0] &&
-			      ((ship[0][1] + 1 == ship[1][1] && ship[0][1] + 2 == ship[2][1] && ship[0][1] + 3 == ship[3][1]) ||
+					(ship[2][1] + 1 == ship[1][1] && ship[1][1] + 1 == ship[0][1])) return true;
+		case 4: if ((ship[0][1] + 1 == ship[1][1] && ship[0][1] + 2 == ship[2][1] && ship[0][1] + 3 == ship[3][1]) ||
 					(ship[0][1] + 1 == ship[1][1] && ship[0][1] + 2 == ship[3][1] && ship[0][1] + 3 == ship[2][1]) ||
 					(ship[0][1] + 1 == ship[3][1] && ship[0][1] + 2 == ship[1][1] && ship[0][1] + 3 == ship[2][1]) ||
 					(ship[0][1] + 1 == ship[3][1] && ship[0][1] + 2 == ship[2][1] && ship[0][1] + 3 == ship[1][1]) ||
@@ -136,19 +155,23 @@ bool AreCellsArrangedVerticallySuccessively(std::vector<std::vector<int>> ship, 
 					(ship[2][1] + 1 == ship[1][1] && ship[2][1] + 2 == ship[0][1] && ship[3][1] + 3 == ship[3][1]) ||
 					(ship[2][1] + 1 == ship[1][1] && ship[2][1] + 2 == ship[3][1] && ship[3][1] + 3 == ship[0][1]) ||
 					(ship[2][1] + 1 == ship[3][1] && ship[2][1] + 2 == ship[1][1] && ship[3][1] + 3 == ship[0][1]) ||
-					(ship[2][1] + 1 == ship[3][1] && ship[2][1] + 2 == ship[0][1] && ship[3][1] + 3 == ship[1][1]))) return true;
+					(ship[2][1] + 1 == ship[3][1] && ship[2][1] + 2 == ship[0][1] && ship[3][1] + 3 == ship[1][1])) return true;
 	}
 	return false;
 }
+
 bool CheckSequence(int quantity_of_deck, std::vector<std::vector<int>> my_ship, IsSuccessively_t IsSuccessivelyF1, IsSuccessively_t IsSuccessivelyF2)//подряд ли клеточки?аргументы: сначала поле и его размеры. потом координаты корабля
 {
 	//проверка ПОЛНОЦЕННЫЙ ЛИ КОРАБЛЬ.
 	//ТО ЕСТЬ НЕТ ЛИ ПРОБЕЛОВ МЕЖДУ ПАЛУБАМИ
 	// КОРАБЛЬ ЛИБО ГОРИЗОНТАЛЬНО РАСПОЛОЖЕН || ЛИБО ВЕРТИКАЛЬНО
-	if (IsSuccessivelyF1(my_ship, quantity_of_deck)  ||  IsSuccessivelyF2(my_ship, quantity_of_deck)  ) return true;
+	if (IsSuccessivelyF1(my_ship, quantity_of_deck, AreChosenCoordinateSame)  ||  IsSuccessivelyF2(my_ship, quantity_of_deck, AreChosenCoordinateSame)  ) return true;
 	
 	return false;
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//CHECK/OF/SHIPS////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void EnterCoordinate(int& coordinate)
 {
 	std::cin >> coordinate;
@@ -224,18 +247,18 @@ void AlgorithmArrangeShips(std::vector<std::vector<char>>& field, int quantity_o
 				EnterCoordinate(column_number);
 
 				//ПРОВЕРКА НЕТ ЛИ РЯДОМ ДРУГИХ КОРАБЛЕЙ. 
-				if (field[row_number][column_number] == 'k' || IsPartOfShipF(ship, row_number, column_number)  )//если уже там стоит корабль или если рядом уже стоял корабль
+				if (field[row_number][column_number] == 'k'  )//если уже там стоит корабль или если рядом уже стоял корабль
 				{
 					std::cout << "There is already a ship on the field in this cell." << std::endl;
 					std::cout << "Please try again to enter cell coordinates." << std::endl;
 					--i;
 				} 
-				else if (IsPartOfShipF(ship, row_number, column_number))
+				/*else if (IsPartOfShipF(ship, row_number, column_number))
 				{
 					std::cout << "You enter the same cell." << std::endl;
 					std::cout << "Please try again to enter cell coordinates." << std::endl;
 					--i;
-				}
+				}*/
 				else if (  IsNearHereAnotherShipsF(field, row_number, column_number)  )
 				{
 					std::cout << "Sorry, you can`t place here a deck of a ship. There is another ships in the field near here." << std::endl;
@@ -247,7 +270,7 @@ void AlgorithmArrangeShips(std::vector<std::vector<char>>& field, int quantity_o
 					ship[i][1] = column_number;
 				}
 			}
-		} while(CheckSequence(quantity_of_decks, ship, AreCellsArrangedHorizontallySuccessively, AreCellsArrangedVerticallySuccessively)); //проверка ПОЛНОЦЕННЫЙ ЛИ КОРАБЛЬ
+		} while(!CheckSequence(quantity_of_decks, ship, AreCellsArrangedHorizontallySuccessively, AreCellsArrangedVerticallySuccessively)); //проверка ПОЛНОЦЕННЫЙ ЛИ КОРАБЛЬ
 		
 		//ЗАПИСЫВАЕМ КОРАБЛЬ НА ПОЛЕ
 		for(int i = 0; i < quantity_of_decks; ++i)//loop for a decks of the ship
