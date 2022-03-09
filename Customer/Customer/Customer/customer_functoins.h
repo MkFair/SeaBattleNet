@@ -10,8 +10,8 @@ const int ROW = 10;
 const int COLUMN = 10;
 
 typedef void (*ShowField_t)(const std::vector<std::vector<char>>& my_field);
-typedef bool (*AreChosenCoordinateSame_t)(std::vector<std::vector<int>> the_ship, int quantity_of_deck, bool is_horisontal);
-typedef bool (*IsSuccessively_t)(std::vector<std::vector<int>> ship, int, AreChosenCoordinateSame_t AreChosenCoordinateSameF);
+typedef bool (*AreChosenCoordinateSame_t)(const std::vector<std::vector<int>>& the_ship, bool is_horisontal);
+typedef bool (*IsSuccessively_t)(const std::vector<std::vector<int>>& ship, AreChosenCoordinateSame_t AreChosenCoordinateSameF);
 typedef bool (*IsPartOfShip_t)(std::vector<std::vector<int>>& , int , int );
 typedef bool (*IsNearHereAnotherShips_t)(std::vector<std::vector<char>>& my_field, int row_number_, int column_number_);
 typedef void (*AlgorithmArrangeShips_t)(std::vector<std::vector<char>>& field, int quantity_of_decks, IsNearHereAnotherShips_t IsNearHereAnotherShipsF, IsPartOfShip_t IsPartOfShipF, ShowField_t ShowFieldF);
@@ -31,10 +31,10 @@ void ArrangeONEShip(std::vector<std::vector<char>>& my_field, AlgorithmArrangeSh
 
 std::vector<std::vector<char>> InitField();
 void ShowField(const std::vector<std::vector<char>>& my_field);
-bool AreChosenCoordinateSame(std::vector<std::vector<int>> the_ship, int quantity_of_deck, bool is_horisontal);
-bool AreCellsArrangedHorizontallySuccessively(std::vector<std::vector<int>> ship, int quantity_of_deck_, AreChosenCoordinateSame_t AreChosenCoordinateSameF);
-bool AreCellsArrangedVerticallySuccessively(std::vector<std::vector<int>> ship, int quantity_of_deck_, AreChosenCoordinateSame_t AreChosenCoordinateSameF);
-bool CheckSequence(int quantity_of_deck, std::vector<std::vector<int>> my_ship, IsSuccessively_t IsSuccessivelyF1, IsSuccessively_t IsSuccessivelyF2);
+bool AreChosenCoordinateSame(const std::vector<std::vector<int>>& the_ship, bool is_horisontal);
+bool AreCellsArrangedHorizontallySuccessively(const std::vector<std::vector<int>>& ship, AreChosenCoordinateSame_t AreChosenCoordinateSameF);
+bool AreCellsArrangedVerticallySuccessively(const std::vector<std::vector<int>>& ship, AreChosenCoordinateSame_t AreChosenCoordinateSameF);
+bool CheckSequence(const std::vector<std::vector<int>>& my_ship, IsSuccessively_t IsSuccessivelyF1, IsSuccessively_t IsSuccessivelyF2);
 void EnterCoordinate(int& coordinate);
 bool IsPartOfShip(std::vector<std::vector<int>>& this_ship, int row_number_, int column_number_);
 bool IsNearHereAnotherShips(std::vector<std::vector<char>>& my_field, int row_number_, int column_number_);
