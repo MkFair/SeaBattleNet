@@ -97,7 +97,7 @@ bool is_wait_state(SOCKET s) {
     return wait_event(s, PacketTypes::ARRANGEMENT_SHIPS);
 }
 //ожидание подключения второго игрока
-void wait_player(SOCKET s,std::chrono::milliseconds delay) {
+void wait_player(SOCKET s,std::chrono::milliseconds delay ) {
     while (is_wait_state(s)) {
         std::this_thread::sleep_for(delay);
     }
@@ -117,7 +117,7 @@ void send_firing_zone(SOCKET s,short x,short y) {
     send_packet(s, PacketTypes::FIRE, data);
 }
 //ожидание сообщения о старте игры, возвращает PacketTypes
-PacketTypes wait_start_game(SOCKET s, std::chrono::milliseconds delay) {
+PacketTypes wait_start_game(SOCKET s, std::chrono::milliseconds delay ) {
     std::pair<PacketTypes, std::vector<char>> data = check_state(s);
     while (data.first!= PacketTypes::START_GAME) {
         std::this_thread::sleep_for(delay);
@@ -131,6 +131,7 @@ PacketTypes wait_start_game(SOCKET s, std::chrono::milliseconds delay) {
 }
 bool wait_event(SOCKET s ,PacketTypes check_type) {
     short type;
+
 
     int size = recv(s, (char*)&type, sizeof(short), 0);
     if (size == sizeof(short) and type == check_type) {

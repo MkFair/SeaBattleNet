@@ -294,11 +294,11 @@ void ArrangeShips(std::vector<std::vector<char>>& my_field, AlgorithmArrangeShip
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///ONLY FOR TEST///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void ArrangeONEShip(std::vector<std::vector<char>>& my_field, AlgorithmArrangeShips_t AlgorithmArrangeShipsF)
+void ArrangeONEShip(std::vector<std::vector<char>>& my_field, AlgorithmArrangeShips_t AlgorithmArrangeShipsF, SOCKET s)
 {
 	
 		std::cout << "Arange four - deck ship!" << std::endl;
-
+		//сюда надо передать сокет чтобы вызвать функцию отправки корабля
 		AlgorithmArrangeShipsF(my_field, 4, IsNearHereAnotherShips, IsPartOfShip, ShowField);
 	
 }

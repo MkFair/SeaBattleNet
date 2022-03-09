@@ -26,9 +26,9 @@ struct ShipPosition {
 void send_packet(SOCKET s, PacketTypes packet_type, std::vector<char>data);
 void add_ship(SOCKET s, std::vector<std::vector<int>>);
 std::pair<PacketTypes, std::vector<char>> recv_packet(SOCKET s);
-bool wait_event(PacketTypes);
-void wait_player();
-PacketTypes wait_start_game();
+bool wait_event(SOCKET s, PacketTypes);
+//void wait_player(SOCKET s, std::chrono::milliseconds delay);
+PacketTypes wait_start_game(SOCKET s, std::chrono::milliseconds delay = std::chrono::milliseconds(100));
 std::vector<char> to_raw_coordinate(ShipPosition);
 WSADATA windows_init();
 sockaddr_in saddr_init();

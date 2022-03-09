@@ -9,6 +9,7 @@
 #include "server_functions.h"
 
 #define LISTEN_PORT 5445
+#define TOTAL_COUNT_SHIPS 2
 
 struct Ship {
     std::pair<short, short> min_pos, max_pos;
@@ -40,7 +41,11 @@ enum PacketTypes {
     WAIT_PLAYER = 11,
     CAN_MOVE = 3,
     OTHER_MOVE = 4,
-    END_GAME = 5
+    END_GAME = 5,
+    START_GAME = 6,
+    CHECK_STATE = 7,
+    FIRE = 8,
+    PLAYER_STEP = 9
 };
 
 short count_deck_calculate(std::pair<short, short> min_pos, std::pair<short, short> max_pos) {
@@ -92,35 +97,81 @@ sockaddr_in saddr_init() {
     sa.sin_port = htons(LISTEN_PORT);
     return sa;
 }
-
+void send_packet(SOCKET s, PacketTypes packet_type, std::vector<char>data) {
+    std::stringstream ss;
+    std::vector<char> raw_packet;
+    raw_packet.resize(sizeof(short));
+    ss.write((char*)&packet_type, sizeof(short));
+    ss.read(raw_packet.data(), sizeof(short));
+    if (!data.empty())
+        raw_packet.insert(raw_packet.end(), data.begin(), data.end());
+    std::cout << "I send packet size " << raw_packet.size() << std::endl;
+    send(s, raw_packet.data(), raw_packet.size(), 0);
+}
 
 void client(SOCKET s_cl,Game* g) {
-    std::vector<char> buf;
-    buf.resize(1024);
-    int size = recv(s_cl, buf.data(), 1024, 0);
-    while (size>0) {
-
-        std::string bufstr(buf.begin(), buf.end());
-        std::cout << "Client send me next data:" << bufstr << " with length = " << size << std::endl;
+    
+    FD_SET fd_read,fd_write;
+    FD_ZERO(&fd_read);
+    FD_SET(s_cl, &fd_read);
+    
+    bool is_close = false;
+    std::vector<char> buffer;
+    buffer.resize(1024);
+    int recv_size;
+    while (!is_close) {
+        int count = select(0, &fd_read, 0, 0,0);
+        switch (count) {
+            case 0:
+                break;
+            case -1:
+                break;
+            default:
+                recv_size = 0;
+                recv_size = recv(s_cl, buffer.data(), buffer.size(),0);
+        }
+        if (recv_size == -1) is_close = true;
+        std::string bufstr(buffer.begin(), buffer.end());
+        //std::cout << "Client send me next data:" << bufstr << " with length = " << recv_size << std::endl;
 
         short type = 0;
         std::stringstream ss;
-        ss.write(buf.data(), sizeof(short));
+        ss.write(buffer.data(), sizeof(short));
         ss.read((char*)&type, sizeof(short));
-        if (type == PacketTypes::ADD_SHIPS and g->current_state==GameStates::ARRANGEMENT) {
-            std::cout << "Packet recv: Adding ship" << std::endl;
-            buf.erase(buf.begin(), buf.begin() + sizeof(short));
-            std::cout << "After resize data" << buf.size() << std::endl;
-            Ship sp = from_raw_data(buf);
-            std::cout << "Client send me next position ship: x1=" << sp.min_pos.first << " y1=" << sp.min_pos.second << " x2=" << sp.max_pos.first << " y2=" << sp.max_pos.second << std::endl;
+        switch (type) {
+            case PacketTypes::ADD_SHIPS:
+                if (g->current_state == GameStates::ARRANGEMENT) {
+                    std::cout << "Packet recv: Adding ship" << std::endl;
+                    buffer.erase(buffer.begin(), buffer.begin() + sizeof(short));
+                    std::cout << "After resize data" << buffer.size() << std::endl;
+                    Ship sp = from_raw_data(buffer);
+                    if (g->players.first.s == s_cl) {
+                        g->players.first.ships.push_back(sp);
+                    }
+                    else {
+                        g->players.second.ships.push_back(sp);
+                    }
+                    //std::cout << "Client send me next position ship: x1=" << sp.min_pos.first << " y1=" << sp.min_pos.second << " x2=" << sp.max_pos.first << " y2=" << sp.max_pos.second << std::endl;
+                    short count_ships = g->players.first.ships.size() + g->players.second.ships.size();
+                    if (count_ships == TOTAL_COUNT_SHIPS) {
+                        send_packet(g->players.first.s,PacketTypes::START_GAME,std::vector<char>());
+                        send_packet(g->players.second.s,PacketTypes::START_GAME,std::vector<char>());
+                        std::cout << "Client send START_GAME"<<std::endl;
+                    }
+                    
+                }
+                break;
+            case PacketTypes::WAIT_PLAYER: {
+                short type = (g->count_players == 1) ? PacketTypes::WAIT_PLAYER : PacketTypes::ARRANGEMENT_SHIPS;
+                send(s_cl, (char*)&type, sizeof(short), 0);
+                }
+                break;
+            case PacketTypes::CHECK_STATE:
+                send(s_cl, (char*)&g->current_state, sizeof(short), 0);
+                break;
         }
-        if (type == PacketTypes::WAIT_PLAYER) {
-            short type = (g->count_players == 1) ? PacketTypes::WAIT_PLAYER : PacketTypes::ARRANGEMENT_SHIPS;
-            std::cout << "WAIT_PLAYER" <<std::endl;
-            send(s_cl, (char*)&type, sizeof(short), 0);
-        }
-        buf.clear();
-        size = recv(s_cl, buf.data(), 1024, 0);
+        buffer.clear();
+
     }
     std::string responce = "HELLO KITTI";
     send(s_cl, responce.data(), responce.size(), 0);
@@ -180,6 +231,7 @@ int main()
         
         Player pl;
         pl.s = s_cl;
+        int current_player_index = 0;
         if (game.count_players) {
             game.players.second = pl;
             //game.players.second.s
@@ -187,6 +239,7 @@ int main()
             arrangement_start(game.players.first.s);
             arrangement_start(game.players.second.s);
             game.current_state = GameStates::ARRANGEMENT;
+            current_player_index = 1;
         }
         else {
             game.players.first = pl;

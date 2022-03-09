@@ -23,7 +23,7 @@ typedef bool (*AreThereAnySheeps_t)(std::vector<std::vector<char>>& field);
 ////////////////////////////////////////////////////
 ///////////////////////////////////////////////////
 //ONLY FOR TEST
-void ArrangeONEShip(std::vector<std::vector<char>>& my_field, AlgorithmArrangeShips_t AlgorithmArrangeShipsF);
+void ArrangeONEShip(std::vector<std::vector<char>>& my_field, AlgorithmArrangeShips_t AlgorithmArrangeShipsF, SOCKET s);
 //ONLY FOR TEST
 //////////////////////////////////////////////////
 ////////////////////////////////////////////////
