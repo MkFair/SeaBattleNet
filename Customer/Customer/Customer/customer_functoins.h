@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
 #include "network.h"
 
 const int ROW = 10;
@@ -22,8 +23,8 @@ std::vector<std::vector<char>> InitField();
 void ShowField(const std::vector<std::vector<char>>& my_field);
 bool AreChosenCoordinateSame(const std::vector<std::vector<int>>& the_ship, bool is_horisontal);
 bool AreCellsArrangedHorizontallySuccessively(const std::vector<std::vector<int>>& ship);
-bool AreCellsArrangedVerticallySuccessively(const std::vector<std::vector<int>>& ship);
-bool CheckSequence(const std::vector<std::vector<int>>& my_ship);
+bool AreCellsArrangedVerticallySuccessively( std::vector<std::vector<int>>& ship);
+bool CheckSequence( std::vector<std::vector<int>>& my_ship);
 void EnterCoordinate(int& coordinate);
 bool IsPartOfShip(std::vector<std::vector<int>>& this_ship, int row_number_, int column_number_);
 bool IsNearHereAnotherShips(std::vector<std::vector<char>>& my_field, int row_number_, int column_number_);
@@ -34,4 +35,6 @@ bool AreThereAnySheeps(std::vector<std::vector<char>>& field);
 void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_);
 void Results(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_);
 
+
+const std::vector<std::vector<int>>& sort_ship(std::vector<std::vector<int>>& ship);
 #endif

@@ -105,9 +105,18 @@ bool AreCellsArrangedHorizontallySuccessively(const std::vector<std::vector<int>
 	}
 	return false;
 }
-
-bool AreCellsArrangedVerticallySuccessively(const std::vector<std::vector<int>>& ship)
+const std::vector<std::vector<int>>& sort_ship(std::vector<std::vector<int>>& ship) {
+	sort(ship.begin(), ship.end(), [](std::vector<int> first, std::vector<int> second) {return first[0] < second[0]; });
+	sort(ship.begin(), ship.end(), [](std::vector<int> first, std::vector<int> second) {return first[1] < second[1]; });
+	for (auto el : ship) {
+		std::cout << el[0] << el[1];
+	}
+	std::cout << "-------------------- -"<<std::endl;
+	return ship;
+}
+bool AreCellsArrangedVerticallySuccessively( std::vector<std::vector<int>>& ship)
 {
+	
 	//X  ARE THE SAME
 	if (!AreChosenCoordinateSame(ship, false)) return false;
 
@@ -152,13 +161,14 @@ bool AreCellsArrangedVerticallySuccessively(const std::vector<std::vector<int>>&
 	return false;
 }
 
-bool CheckSequence(const std::vector<std::vector<int>>& my_ship)//подряд ли клеточки?аргументы: сначала поле и его размеры. потом координаты корабля
+bool CheckSequence( std::vector<std::vector<int>>& my_ship)//подряд ли клеточки?аргументы: сначала поле и его размеры. потом координаты корабля
 {
+	sort_ship(my_ship);
 	//проверка ПОЛНОЦЕННЫЙ ЛИ КОРАБЛЬ.
 	//ТО ЕСТЬ НЕТ ЛИ ПРОБЕЛОВ МЕЖДУ ПАЛУБАМИ
 	// КОРАБЛЬ ЛИБО ГОРИЗОНТАЛЬНО РАСПОЛОЖЕН || ЛИБО ВЕРТИКАЛЬНО
 	if (   AreCellsArrangedHorizontallySuccessively(my_ship)  ||  AreCellsArrangedVerticallySuccessively(my_ship)  ) return true;
-	
+	std::cout << "------Ship is invalid------"<<std::endl;
 	return false;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -253,14 +263,16 @@ void AlgorithmArrangeShips(std::vector<std::vector<char>>& field, int quantity_o
 				{
 					ship[i][0] = row_number;
 					ship[i][1] = column_number;
+					
 				}
 			}
 		} while(!CheckSequence(ship)); //проверка ПОЛНОЦЕННЫЙ ЛИ КОРАБЛЬ
 		
 		//ЗАПИСЫВАЕМ КОРАБЛЬ НА ПОЛЕ
-		for(int i = 0; i < quantity_of_decks; ++i)//loop for a decks of the ship
-			field[  ship[i][0]  ][  ship[i][1]  ] = 'k';
-
+		for (int i = 0; i < quantity_of_decks; ++i) {//loop for a decks of the ship
+			field[ship[i][0]][ship[i][1]] = 'k';
+			std::cout << "Ship append in the list";
+		}
 		//SENT ON SERVER SHIP VECTOR
 		add_ship(socket, ship);
 		//show field
@@ -296,7 +308,6 @@ void ArrangeShips(std::vector<std::vector<char>>& my_field, SOCKET s)
 void ArrangeONEShip(std::vector<std::vector<char>>& my_field, SOCKET s)
 {
 		std::cout << "Arange four - deck ship!" << std::endl;
-		//сюда надо передать сокет чтобы вызвать функцию отправки корабля
 		AlgorithmArrangeShips(my_field, 4,s);
 	
 }
