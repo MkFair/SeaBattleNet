@@ -27,7 +27,7 @@ bool CheckSequence(const std::vector<std::vector<int>>& my_ship);
 void EnterCoordinate(int& coordinate);
 bool IsPartOfShip(std::vector<std::vector<int>>& this_ship, int row_number_, int column_number_);
 bool IsNearHereAnotherShips(std::vector<std::vector<char>>& my_field, int row_number_, int column_number_);
-void AlgorithmArrangeShips(std::vector<std::vector<char>>& field, int quantity_of_decks, SOCKET s);
+void AlgorithmArrangeShips(std::vector<std::vector<char>>& field, int quantity_of_decks, SOCKET socket);
 void ArrangeShips(std::vector<std::vector<char>>& my_field, SOCKET s);
 bool HaveHitTheTarget(std::vector<std::vector<char>>& field, int row_number, int column_number);
 bool AreThereAnySheeps(std::vector<std::vector<char>>& field);

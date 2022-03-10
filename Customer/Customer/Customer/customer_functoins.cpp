@@ -206,7 +206,7 @@ bool IsNearHereAnotherShips(std::vector<std::vector<char>>& my_field, int row_nu
 	return false;
 }
 
-void AlgorithmArrangeShips(std::vector<std::vector<char>>& field, int quantity_of_decks,SOCKET s)
+void AlgorithmArrangeShips(std::vector<std::vector<char>>& field, int quantity_of_decks,SOCKET socket)
 {
 	int row_number;
 
@@ -262,14 +262,13 @@ void AlgorithmArrangeShips(std::vector<std::vector<char>>& field, int quantity_o
 			field[  ship[i][0]  ][  ship[i][1]  ] = 'k';
 
 		//SENT ON SERVER SHIP VECTOR
-		
-
+		add_ship(socket, ship);
 		//show field
 		ShowField(field);
 	}
 }
 
-void ArrangeShips(std::vector<std::vector<char>>& my_field)
+void ArrangeShips(std::vector<std::vector<char>>& my_field, SOCKET s)
 {
 	for(int quantity_of_decks_ = 4; quantity_of_decks_ >= 1; --quantity_of_decks_)
 	{
@@ -286,7 +285,7 @@ void ArrangeShips(std::vector<std::vector<char>>& my_field)
 		else 
 			std::cout << " - deck ship!" << std::endl;
 
-		AlgorithmArrangeShips(my_field, quantity_of_decks_);
+		AlgorithmArrangeShips(my_field, quantity_of_decks_, s);
 	}
 }
 
