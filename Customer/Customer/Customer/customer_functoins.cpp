@@ -56,7 +56,7 @@ void ShowField(const std::vector<std::vector<char>>& my_field)
 bool AreChosenCoordinateSame(const std::vector<std::vector<int>>& the_ship, bool is_horisontal)
 {
 	for (std::vector<std::vector<int>>::const_iterator i = the_ship.begin() + 1; i != the_ship.end(); ++i)
-		if (the_ship.begin()[(int)is_horisontal] != i[(int)is_horisontal]) return false;
+		if (the_ship[0][(int)is_horisontal] != (*i)[(int)is_horisontal]) return false;
 		else return true;
 }
 
@@ -64,7 +64,8 @@ bool AreCellsArrangedHorizontallySuccessively(const std::vector<std::vector<int>
 {
 	//Y  ARE THE SAME
 	if (  !AreChosenCoordinateSame(ship, true)  ) return false;
-
+	return check_is_linear(ship, true);
+	/*
 	switch (ship.size())
 	{
 		case 1: return true; break;
@@ -103,7 +104,7 @@ bool AreCellsArrangedHorizontallySuccessively(const std::vector<std::vector<int>
 				   (ship[2][0] + 1 == ship[3][0] && ship[2][0] + 2 == ship[1][0] && ship[3][0] + 3 == ship[0][0]) ||
 				   (ship[2][0] + 1 == ship[3][0] && ship[2][0] + 2 == ship[0][0] && ship[3][0] + 3 == ship[1][0])) return true;
 	}
-	return false;
+	return false;*/
 }
 const std::vector<std::vector<int>>& sort_ship(std::vector<std::vector<int>>& ship) {
 	sort(ship.begin(), ship.end(), [](std::vector<int> first, std::vector<int> second) {return first[0] < second[0]; });
@@ -114,12 +115,23 @@ const std::vector<std::vector<int>>& sort_ship(std::vector<std::vector<int>>& sh
 	std::cout << "-------------------- -"<<std::endl;
 	return ship;
 }
+
+bool check_is_linear(const std::vector<std::vector<int>>& ship,bool is_horisontal) {
+	for (short i = 1; i < ship.size(); i++) {
+		std::cout << "current coord test "<< ship[i][static_cast<int>(is_horisontal)]<<std::endl;
+		if(ship[i][static_cast<int>(!is_horisontal)]!= ship[i-1][static_cast<int>(!is_horisontal)]+1)
+			return false;
+	}
+	return true;
+}
+
 bool AreCellsArrangedVerticallySuccessively( std::vector<std::vector<int>>& ship)
 {
 	
 	//X  ARE THE SAME
 	if (!AreChosenCoordinateSame(ship, false)) return false;
-
+	return check_is_linear(ship,false);
+	/*
 	switch (ship.size())
 	{
 		case 1: return true; break;
@@ -158,7 +170,7 @@ bool AreCellsArrangedVerticallySuccessively( std::vector<std::vector<int>>& ship
 					(ship[2][1] + 1 == ship[3][1] && ship[2][1] + 2 == ship[1][1] && ship[3][1] + 3 == ship[0][1]) ||
 					(ship[2][1] + 1 == ship[3][1] && ship[2][1] + 2 == ship[0][1] && ship[3][1] + 3 == ship[1][1])) return true;
 	}
-	return false;
+	return false;*/
 }
 
 bool CheckSequence( std::vector<std::vector<int>>& my_ship)//подряд ли клеточки?аргументы: сначала поле и его размеры. потом координаты корабля

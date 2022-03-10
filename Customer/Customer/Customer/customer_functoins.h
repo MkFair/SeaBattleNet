@@ -35,6 +35,6 @@ bool AreThereAnySheeps(std::vector<std::vector<char>>& field);
 void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_);
 void Results(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_);
 
-
+bool check_is_linear(const std::vector<std::vector<int>>& ship, bool is_horisontal);
 const std::vector<std::vector<int>>& sort_ship(std::vector<std::vector<int>>& ship);
 #endif
