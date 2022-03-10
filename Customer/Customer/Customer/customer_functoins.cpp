@@ -49,8 +49,8 @@ void ShowField(const std::vector<std::vector<char>>& my_field)
 		std::cout << std::endl;
 	}
 
-
 }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //CHECK/OF/SHIPS////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool AreChosenCoordinateSame(const std::vector<std::vector<int>>& the_ship, bool is_horisontal)
@@ -60,10 +60,10 @@ bool AreChosenCoordinateSame(const std::vector<std::vector<int>>& the_ship, bool
 		else return true;
 }
 
-bool AreCellsArrangedHorizontallySuccessively(std::vector<std::vector<int>> ship, AreChosenCoordinateSame_t AreChosenCoordinateSameF)
+bool AreCellsArrangedHorizontallySuccessively(const std::vector<std::vector<int>> ship)
 {
 	//Y  ARE THE SAME
-	if (  !AreChosenCoordinateSameF(ship, true)  ) return false;
+	if (  !AreChosenCoordinateSame(ship, true)  ) return false;
 
 	switch (ship.size())
 	{
@@ -106,10 +106,10 @@ bool AreCellsArrangedHorizontallySuccessively(std::vector<std::vector<int>> ship
 	return false;
 }
 
-bool AreCellsArrangedVerticallySuccessively(std::vector<std::vector<int>> ship, AreChosenCoordinateSame_t AreChosenCoordinateSameF)
+bool AreCellsArrangedVerticallySuccessively(const std::vector<std::vector<int>> ship)
 {
 	//X  ARE THE SAME
-	if (!AreChosenCoordinateSameF(ship, false)) return false;
+	if (!AreChosenCoordinateSame(ship, false)) return false;
 
 	switch (ship.size())
 	{
@@ -152,12 +152,12 @@ bool AreCellsArrangedVerticallySuccessively(std::vector<std::vector<int>> ship, 
 	return false;
 }
 
-bool CheckSequence(const std::vector<std::vector<int>>& my_ship, IsSuccessively_t IsSuccessivelyF1, IsSuccessively_t IsSuccessivelyF2)//подряд ли клеточки?аргументы: сначала поле и его размеры. потом координаты корабля
+bool CheckSequence(const std::vector<std::vector<int>>& my_ship)//подряд ли клеточки?аргументы: сначала поле и его размеры. потом координаты корабля
 {
 	//проверка ПОЛНОЦЕННЫЙ ЛИ КОРАБЛЬ.
 	//ТО ЕСТЬ НЕТ ЛИ ПРОБЕЛОВ МЕЖДУ ПАЛУБАМИ
 	// КОРАБЛЬ ЛИБО ГОРИЗОНТАЛЬНО РАСПОЛОЖЕН || ЛИБО ВЕРТИКАЛЬНО
-	if (IsSuccessivelyF1(my_ship, AreChosenCoordinateSame)  ||  IsSuccessivelyF2(my_ship, AreChosenCoordinateSame)  ) return true;
+	if (   AreCellsArrangedHorizontallySuccessively(my_ship)  ||  AreCellsArrangedVerticallySuccessively(my_ship)  ) return true;
 	
 	return false;
 }
@@ -206,7 +206,7 @@ bool IsNearHereAnotherShips(std::vector<std::vector<char>>& my_field, int row_nu
 	return false;
 }
 
-void AlgorithmArrangeShips(std::vector<std::vector<char>>& field, int quantity_of_decks, IsNearHereAnotherShips_t IsNearHereAnotherShipsF, IsPartOfShip_t IsPartOfShipF, ShowField_t ShowFieldF)
+void AlgorithmArrangeShips(std::vector<std::vector<char>>& field, int quantity_of_decks)
 {
 	int row_number;
 
@@ -244,7 +244,7 @@ void AlgorithmArrangeShips(std::vector<std::vector<char>>& field, int quantity_o
 					std::cout << "There is already a ship on the field in this cell." << std::endl;
 					std::cout << "Please try again to enter cell coordinates." << std::endl;
 					--i;
-				} else if (  IsNearHereAnotherShipsF(field, row_number, column_number)  )
+				} else if (  IsNearHereAnotherShips(field, row_number, column_number)  )
 				{
 					std::cout << "Sorry, you can`t place here a deck of a ship. There is another ships in the field near here." << std::endl;
 					std::cout << "Please try again to enter cell coordinates." << std::endl;
@@ -255,7 +255,7 @@ void AlgorithmArrangeShips(std::vector<std::vector<char>>& field, int quantity_o
 					ship[i][1] = column_number;
 				}
 			}
-		} while(!CheckSequence(ship, AreCellsArrangedHorizontallySuccessively, AreCellsArrangedVerticallySuccessively)); //проверка ПОЛНОЦЕННЫЙ ЛИ КОРАБЛЬ
+		} while(!CheckSequence(ship)); //проверка ПОЛНОЦЕННЫЙ ЛИ КОРАБЛЬ
 		
 		//ЗАПИСЫВАЕМ КОРАБЛЬ НА ПОЛЕ
 		for(int i = 0; i < quantity_of_decks; ++i)//loop for a decks of the ship
@@ -265,11 +265,11 @@ void AlgorithmArrangeShips(std::vector<std::vector<char>>& field, int quantity_o
 		
 
 		//show field
-		ShowFieldF(field);
+		ShowField(field);
 	}
 }
 
-void ArrangeShips(std::vector<std::vector<char>>& my_field, AlgorithmArrangeShips_t AlgorithmArrangeShipsF)
+void ArrangeShips(std::vector<std::vector<char>>& my_field)
 {
 	for(int quantity_of_decks_ = 4; quantity_of_decks_ >= 1; --quantity_of_decks_)
 	{
@@ -286,7 +286,7 @@ void ArrangeShips(std::vector<std::vector<char>>& my_field, AlgorithmArrangeShip
 		else 
 			std::cout << " - deck ship!" << std::endl;
 
-		AlgorithmArrangeShipsF(my_field, quantity_of_decks_, IsNearHereAnotherShips, IsPartOfShip, ShowField);
+		AlgorithmArrangeShips(my_field, quantity_of_decks_);
 	}
 }
 
@@ -294,12 +294,11 @@ void ArrangeShips(std::vector<std::vector<char>>& my_field, AlgorithmArrangeShip
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///ONLY FOR TEST///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void ArrangeONEShip(std::vector<std::vector<char>>& my_field, AlgorithmArrangeShips_t AlgorithmArrangeShipsF, SOCKET s)
+void ArrangeONEShip(std::vector<std::vector<char>>& my_field, SOCKET s)
 {
-	
 		std::cout << "Arange four - deck ship!" << std::endl;
 		//сюда надо передать сокет чтобы вызвать функцию отправки корабля
-		AlgorithmArrangeShipsF(my_field, 4, IsNearHereAnotherShips, IsPartOfShip, ShowField);
+		AlgorithmArrangeShips(my_field, 4);
 	
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -315,13 +314,13 @@ bool AreAllEnemyShipsSunked(const std::vector<std::vector<char>>& some_field)
 	return true;
 }
 
-bool HaveHitTheTarget(std::vector<std::vector<char>>& field, int row_number_, int column_number_, ShowField_t ShowFieldF)
+bool HaveHitTheTarget(std::vector<std::vector<char>>& field, int row_number_, int column_number_)
 {
 	if (field[row_number_][column_number_] == 'k')
 		field[row_number_][column_number_] = 'p';// HAVE HIT THE TARGET   ПОПАЛ
 	else field[row_number_][column_number_] = 'm';//HAVE MISSED    ПРОМАХНУЛСЯ
 
-	ShowFieldF(field);
+	ShowField(field);
 
 	if (field[row_number_][column_number_] == 'm') return false;
 	else return true;
@@ -335,7 +334,7 @@ bool AreThereAnySheeps(std::vector<std::vector<char>>& field)
 	return false;
 }
 
-void Step(std::vector<std::vector<char>>& some_field, HaveHitTheTarget_t HaveHitTheTargetF, AreThereAnySheeps_t AreThereAnySheepsF)
+void Step(std::vector<std::vector<char>>& some_field)
 {
 	int row_number;
 
@@ -347,23 +346,23 @@ void Step(std::vector<std::vector<char>>& some_field, HaveHitTheTarget_t HaveHit
 		EnterCoordinate(row_number);
 		std::cout << "Enter a column:";
 		EnterCoordinate(column_number);
-	} while(   HaveHitTheTargetF(some_field, row_number, column_number, ShowField) && AreThereAnySheepsF(some_field)   );
+	} while(   HaveHitTheTarget(some_field, row_number, column_number) && AreThereAnySheeps(some_field)   );
 }
 
-void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_, HaveHitTheTarget_t HaveHitTheTargetF, AreThereAnySheeps_t AreThereAnySheepsF)
+void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_)
 {
 	while(true) // the eternal loop
 	{
-		Step(customer_field_, HaveHitTheTargetF, AreThereAnySheepsF); // STEP OF ENEMY
-		if (!AreThereAnySheepsF(customer_field_)) break;
-		Step(enemy_field_, HaveHitTheTargetF, AreThereAnySheepsF); // STEP OF THE CUSTOMER
-		if (!AreThereAnySheepsF(enemy_field_)) break;
+		Step(customer_field_); // STEP OF ENEMY
+		if (!AreThereAnySheeps(customer_field_)) break;
+		Step(enemy_field_); // STEP OF THE CUSTOMER
+		if (!AreThereAnySheeps(enemy_field_)) break;
 	}
 }
 
-void Results(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_, AreThereAnySheeps_t AreThereAnySheepsF)
+void Results(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_)
 {
-	if (AreThereAnySheepsF(customer_field_))
+	if (AreThereAnySheeps(customer_field_))
 		std::cout << "You are a winner. Congratulations!" << std::endl;
 	else 
 		std::cout << "You are a looser. ";

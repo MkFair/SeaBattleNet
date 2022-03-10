@@ -2,7 +2,6 @@
 #include "customer_functoins.h"
 #include "network.h"
 
-
 extern const int ROW;
 
 extern const int COLUMN;
@@ -30,12 +29,12 @@ int main()
     ShowField(customer_field);
     
 
-    ArrangeONEShip(customer_field, AlgorithmArrangeShips,SOCKET s);// A FUNC ONLY FOR TEST
-    //ArrangeShips(customer_field, AlgorithmArrangeShips);// A REAL FUNC
+    ArrangeONEShip(customer_field, s);// A FUNC ONLY FOR TEST
+    //ArrangeShips(customer_field, s);// A REAL FUNC
 
     wait_start_game(s);
-    Game(customer_field, enemy_field, HaveHitTheTarget, AreThereAnySheeps);
-    Results(customer_field, enemy_field, AreThereAnySheeps);
+    Game(customer_field, enemy_field);
+    Results(customer_field, enemy_field);
 
 	return 0;
 }
