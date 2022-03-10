@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "customer_functoins.h"
-
+#include "network.h"
 
 extern const int ROW;
 
