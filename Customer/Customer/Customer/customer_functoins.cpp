@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include "customer_functoins.h"
-#include "network.h"
+
 
 extern const int ROW;
 
@@ -60,7 +60,7 @@ bool AreChosenCoordinateSame(const std::vector<std::vector<int>>& the_ship, bool
 		else return true;
 }
 
-bool AreCellsArrangedHorizontallySuccessively(const std::vector<std::vector<int>> ship)
+bool AreCellsArrangedHorizontallySuccessively(const std::vector<std::vector<int>>& ship)
 {
 	//Y  ARE THE SAME
 	if (  !AreChosenCoordinateSame(ship, true)  ) return false;
@@ -106,7 +106,7 @@ bool AreCellsArrangedHorizontallySuccessively(const std::vector<std::vector<int>
 	return false;
 }
 
-bool AreCellsArrangedVerticallySuccessively(const std::vector<std::vector<int>> ship)
+bool AreCellsArrangedVerticallySuccessively(const std::vector<std::vector<int>>& ship)
 {
 	//X  ARE THE SAME
 	if (!AreChosenCoordinateSame(ship, false)) return false;
@@ -206,7 +206,7 @@ bool IsNearHereAnotherShips(std::vector<std::vector<char>>& my_field, int row_nu
 	return false;
 }
 
-void AlgorithmArrangeShips(std::vector<std::vector<char>>& field, int quantity_of_decks)
+void AlgorithmArrangeShips(std::vector<std::vector<char>>& field, int quantity_of_decks,SOCKET s)
 {
 	int row_number;
 
@@ -298,7 +298,7 @@ void ArrangeONEShip(std::vector<std::vector<char>>& my_field, SOCKET s)
 {
 		std::cout << "Arange four - deck ship!" << std::endl;
 		//сюда надо передать сокет чтобы вызвать функцию отправки корабля
-		AlgorithmArrangeShips(my_field, 4);
+		AlgorithmArrangeShips(my_field, 4,s);
 	
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

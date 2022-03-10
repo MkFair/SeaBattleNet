@@ -17,7 +17,7 @@ int main()
         //return 1;
     }
     std::cout << "Wait connect other player ...";
-    wait_player(s);
+    //wait_player(s);
     //тестовая отправка координат корабля в начале игры
     //std::vector<std::vector<int>> posv{ {1,2}, {2,2}, {5,3} };
     //add_ship(s, posv);
