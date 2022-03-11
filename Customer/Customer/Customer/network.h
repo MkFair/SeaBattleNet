@@ -10,6 +10,7 @@
 #include <thread>
 #define LISTEN_PORT 5445
 enum PacketTypes {
+    UNRECOG = 0,
     ARRANGEMENT_SHIPS = 1,
     ADD_SHIPS = 2,
     WAIT_PLAYER = 11,
@@ -19,6 +20,12 @@ enum PacketTypes {
     START_GAME = 6,
     CHECK_STATE = 7,
     FIRE = 8
+};
+enum GameStates {
+    WAIT = 1,
+    ARRANGEMENT = 2,
+    RUNNING = 3,
+    END = 5
 };
 struct ShipPosition {
 	std::pair<short, short> min_pos, max_pos;

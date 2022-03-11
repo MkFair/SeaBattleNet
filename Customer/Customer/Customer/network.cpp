@@ -78,17 +78,23 @@ void send_packet(SOCKET s, PacketTypes packet_type, std::vector<char>data) {
     ss.read(raw_packet.data(), sizeof(short));
     if(!data.empty())
         raw_packet.insert(raw_packet.end(), data.begin(), data.end());
-    std::cout << "I send packet size " << raw_packet.size() << std::endl;
-    send(s, raw_packet.data(), raw_packet.size(), 0);
+    for(int y=0;y<100;y++)
+        raw_packet.push_back('s');
+    short size = send(s, raw_packet.data(), raw_packet.size(), 0);
+    std::cout << "I send packet size " << size << std::endl;
 }
 std::pair<PacketTypes,std::vector<char>> recv_packet(SOCKET s){
     std::vector<char> raw_packet;
     raw_packet.resize(1024);
-    recv(s, raw_packet.data(), raw_packet.size(),0);
+    short size = recv(s, raw_packet.data(), raw_packet.size(),0);
+    std::cout << "I recv packet size " << size << std::string(raw_packet.begin(), raw_packet.end()) << std::endl;
     std::stringstream ss;
     ss.write(raw_packet.data(), sizeof(short));
-    PacketTypes type;
+    PacketTypes type = PacketTypes::UNRECOG;
+    std::cout << ss.str()<<std::endl;
+    ss.seekg(0);
     ss.read((char*)&type,sizeof(short));
+    std::cout << std::hex<<type << std::endl;
     raw_packet.erase(raw_packet.begin(), raw_packet.begin()+ sizeof(short));
     return std::pair<PacketTypes, std::vector<char>>(type, raw_packet);
 }
@@ -118,11 +124,14 @@ void send_firing_zone(SOCKET s,short x,short y) {
 }
 //ожидание сообщения о старте игры, возвращает PacketTypes
 PacketTypes wait_start_game(SOCKET s, std::chrono::milliseconds delay ) {
-    std::pair<PacketTypes, std::vector<char>> data = check_state(s);
-    while (data.first!= PacketTypes::START_GAME) {
+    std::pair<PacketTypes, std::vector<char>> data = recv_packet(s);// check_state(s);
+    
+    std::cout << "Start loop wait game start ..."<< (int)data.first << std::string(data.second.begin(), data.second.end() )<<std::endl;
+    while (data.first!= PacketTypes::CAN_MOVE && data.first != PacketTypes::OTHER_MOVE) {
         std::this_thread::sleep_for(delay);
-        data = check_state(s);
+        data = recv_packet(s);
     }
+    std::cout << "Start play game" << std::endl;
     PacketTypes result;
     std::stringstream ss;
     ss.write(data.second.data(),sizeof(short));
