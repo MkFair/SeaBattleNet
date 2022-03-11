@@ -371,14 +371,25 @@ void Step(std::vector<std::vector<char>>& some_field)
 	} while(   HaveHitTheTarget(some_field, row_number, column_number) && AreThereAnySheeps(some_field)   );
 }
 
-void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_)
+void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_,SOCKET s)
 {
-	while(true) // the eternal loop
+	std::cout << "Wait start game ..." << std::endl;
+	PacketTypes type = wait_start_game(s);
+	std::cout << "game is starting  ..." << std::endl;
+	bool my_first_step = false;
+	if (type == PacketTypes::CAN_MOVE)
+		my_first_step = true;
+	while (true) // the eternal loop
 	{
-		Step(customer_field_); // STEP OF ENEMY
-		if (!AreThereAnySheeps(customer_field_)) break;
-		Step(enemy_field_); // STEP OF THE CUSTOMER
-		if (!AreThereAnySheeps(enemy_field_)) break;
+		if (my_first_step) {
+			Step(enemy_field_); // STEP OF THE CUSTOMER
+			Step(customer_field_); // STEP OF ENEMY
+		}
+		else {
+			Step(enemy_field_); // STEP OF THE CUSTOMER
+			Step(customer_field_); // STEP OF ENEMY
+		}
+		if (!AreThereAnySheeps(enemy_field_) || !AreThereAnySheeps(customer_field_)) break;
 	}
 }
 

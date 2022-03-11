@@ -32,7 +32,7 @@ void AlgorithmArrangeShips(std::vector<std::vector<char>>& field, int quantity_o
 void ArrangeShips(std::vector<std::vector<char>>& my_field, SOCKET s);
 bool HaveHitTheTarget(std::vector<std::vector<char>>& field, int row_number, int column_number);
 bool AreThereAnySheeps(std::vector<std::vector<char>>& field);
-void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_);
+void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_, SOCKET s);
 void Results(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_);
 
 bool check_is_linear(const std::vector<std::vector<int>>& ship, bool is_horisontal);
