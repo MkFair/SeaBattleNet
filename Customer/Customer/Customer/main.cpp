@@ -32,7 +32,7 @@ int main()
     ArrangeONEShip(customer_field, s);// A FUNC ONLY FOR TEST
     //ArrangeShips(customer_field, s);// A REAL FUNC
     
-    Game(customer_field, enemy_field,s);
+    Game(customer_field, enemy_field, s);
     Results(customer_field, enemy_field);
 
 	return 0;

@@ -50,7 +50,42 @@ void ShowField(const std::vector<std::vector<char>>& my_field)
 	}
 
 }
+void ShowBothFields(const std::vector<std::vector<char>>& my_field, const std::vector<std::vector<char>>& enemy_field)
+{
+	std::cout << "\t\t\tYOUR FIELD\t\t\t\t\t\t\t\t\tENEMY`S FIELD" << std::endl;
+	//std::cout << std::endl << "\tYOUR FIELD" << std::endl;
 
+	for (int i = 1; i <= COLUMN; ++i)
+	{
+		if (i == 1) std::cout << "    " << i;
+		else std::cout << "  " << i;
+	}
+	std::cout << "\t\t\t";
+	for (int i = 1; i <= COLUMN; ++i)
+	{
+		if (i == 1) std::cout << "    " << i;
+		else std::cout << "  " << i;
+	}
+	std::cout << std::endl;
+
+	for (int i = 0; i < ROW; ++i)
+	{
+		std::cout << i + 1;
+		for (int j = 0; j < COLUMN; ++j)
+		{
+			if (i != 9 && j == 0) std::cout << "   " << my_field[i][j];
+			else std::cout << "  " << my_field[i][j];
+		}
+		std::cout << "\t\t\t" << i + 1;
+		for (int j = 0; j < COLUMN; ++j)
+		{
+			if (i != 9 && j == 0) std::cout << "   " << enemy_field[i][j];
+			else std::cout << "  " << enemy_field[i][j];
+		}
+		std::cout << std::endl;
+	}
+
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //CHECK/OF/SHIPS////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 bool AreChosenCoordinateSame(const std::vector<std::vector<int>>& the_ship, bool is_horisontal)
@@ -371,10 +406,10 @@ void Step(std::vector<std::vector<char>>& some_field)
 	} while(   HaveHitTheTarget(some_field, row_number, column_number) && AreThereAnySheeps(some_field)   );
 }
 
-void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_,SOCKET s)
+void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_,SOCKET socket)
 {
 	std::cout << "Wait start game ..." << std::endl;
-	PacketTypes type = wait_start_game(s);
+	PacketTypes type = wait_start_game(socket);
 	std::cout << "game is starting  ..." << std::endl;
 	bool my_first_step = false;
 	if (type == PacketTypes::CAN_MOVE)

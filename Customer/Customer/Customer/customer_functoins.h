@@ -21,6 +21,7 @@ void ArrangeONEShip(std::vector<std::vector<char>>& my_field, SOCKET s);
 
 std::vector<std::vector<char>> InitField();
 void ShowField(const std::vector<std::vector<char>>& my_field);
+void ShowBothFields(const std::vector<std::vector<char>>& my_field, const std::vector<std::vector<char>>& enemy_field);
 bool AreChosenCoordinateSame(const std::vector<std::vector<int>>& the_ship, bool is_horisontal);
 bool AreCellsArrangedHorizontallySuccessively(const std::vector<std::vector<int>>& ship);
 bool AreCellsArrangedVerticallySuccessively( std::vector<std::vector<int>>& ship);
