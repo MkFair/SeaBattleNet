@@ -379,9 +379,17 @@ bool HaveHitTheTarget(std::vector<std::vector<char>>& field, int row_number_, in
 
 	ShowField(field);
 
-
 	if (field[row_number_][column_number_] == 'm') return false;
 	else return true;
+}
+
+void HaveHitMyShip(std::vector<std::vector<char>>& field, int row_number_, int column_number_)
+{
+	if (field[row_number_][column_number_] == 'k')
+		field[row_number_][column_number_] = 'p';// HAVE HIT THE TARGET   оноюк
+	else field[row_number_][column_number_] = 'm';//HAVE MISSED    опнлюумскяъ
+
+	ShowField(field);
 }
 
 bool AreThereAnySheeps(std::vector<std::vector<char>>& field)
