@@ -160,6 +160,14 @@ void client(SOCKET s_cl,Game* g) {
                         ss.seekg(sizeof(short) * 2);
                         ss.read((char*)&y, sizeof(short));
                         std::cout << "Packet recv: Fire by pos " << x << ":" << y << std::endl;
+                        if (g->player_tern_id == 1 and g->players.first.s == s_cl) {
+                            send_packet(g->players.first.s, PacketTypes::CAN_MOVE, std::vector<char>());
+                            send_packet(g->players.second.s, PacketTypes::OTHER_MOVE, std::vector<char>());
+                        }
+                        else {
+                            send_packet(g->players.first.s, PacketTypes::OTHER_MOVE, std::vector<char>());
+                            send_packet(g->players.second.s, PacketTypes::CAN_MOVE, std::vector<char>());
+                        }
                     }
                     break;
                 

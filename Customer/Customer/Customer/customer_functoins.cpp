@@ -429,15 +429,10 @@ void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vect
 		ShowBothFields(customer_field_, enemy_field_);
 		if (my_first_step) {
 			Step(enemy_field_, socket); // STEP OF THE CUSTOMER
-			std::cout << "Wait other player ...";
-			std::pair<PacketTypes, std::vector<char>>res =  recv_packet(socket);
-			//HaveHitMyShip(customer_field_, res.first, res.second);
-			std::cout << "step ok" << std::endl;
+			std::pair<short , short> res = wait_other_player(socket);
 		}
 		else {
-			std::cout << "Wait other player ...";
-			std::pair<PacketTypes, std::vector<char>>res = recv_packet(socket);
-			std::cout << "step ok" << std::endl;
+			std::pair<short, short> res = wait_other_player(socket);
 			Step(enemy_field_, socket); // STEP OF THE CUSTOMER
 		}
 		if (!AreThereAnySheeps(enemy_field_) || !AreThereAnySheeps(customer_field_)) break;

@@ -44,3 +44,5 @@ void wait_player(SOCKET s, std::chrono::milliseconds delay = std::chrono::millis
 bool is_wait_state(SOCKET s);
 void send_firing_zone(SOCKET s, short x, short y);
 std::pair<PacketTypes, std::vector<char>> check_state(SOCKET s);
+
+std::pair<short, short> wait_other_player(SOCKET s);

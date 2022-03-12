@@ -70,6 +70,18 @@ void add_ship(SOCKET s,std::vector<std::vector<int>> ship_info) {
     std::vector<char> raw_data = to_raw_coordinate(sp);
     send_packet(s, PacketTypes::ADD_SHIPS, raw_data);
 }
+std::pair<short, short> wait_other_player(SOCKET s) {
+    std::cout << "Wait other player ...";
+    std::pair<PacketTypes, std::vector<char>>res = recv_packet(s);
+    std::cout << "step ok" << std::endl;
+    std::stringstream ss;
+    ss.read(res.second.data(), sizeof(short)*2);
+    std::pair<short, short> result = {0,0};
+    ss.write((char*)&result.first,sizeof(short));
+    ss.seekg(sizeof(short));
+    ss.write((char*)&result.second,sizeof(short));
+    return result;
+}
 void send_packet(SOCKET s, PacketTypes packet_type, std::vector<char>data) {
     std::stringstream ss;
     std::vector<char> raw_packet;
