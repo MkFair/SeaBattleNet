@@ -19,8 +19,7 @@ int main()
     std::cout << "Wait connect other player ..."<<std::endl;
     wait_player(s);
     //тестовая отправка координат корабля в начале игры
-    //std::vector<std::vector<int>> posv{ {1,2}, {2,2}, {5,3} };
-    //add_ship(s, posv);
+   
 
     std::vector<std::vector<char>> customer_field(ROW, std::vector<char>(COLUMN));
     std::vector<std::vector<char>> enemy_field(ROW, std::vector<char>(COLUMN));
@@ -31,7 +30,8 @@ int main()
 
     ArrangeONEShip(customer_field, s);// A FUNC ONLY FOR TEST
     //ArrangeShips(customer_field, s);// A REAL FUNC
-    
+    std::vector<std::vector<int>> posv{ {1,2}, {2,2}, {5,3} };
+    add_ship(s, posv);
     Game(customer_field, enemy_field, s);
     Results(customer_field, enemy_field);
 

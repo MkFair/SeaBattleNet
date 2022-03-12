@@ -379,6 +379,7 @@ bool HaveHitTheTarget(std::vector<std::vector<char>>& field, int row_number_, in
 
 	ShowField(field);
 
+
 	if (field[row_number_][column_number_] == 'm') return false;
 	else return true;
 }
@@ -391,7 +392,7 @@ bool AreThereAnySheeps(std::vector<std::vector<char>>& field)
 	return false;
 }
 
-void Step(std::vector<std::vector<char>>& some_field)
+void Step(std::vector<std::vector<char>>& some_field,SOCKET s)
 {
 	int row_number;
 
@@ -404,6 +405,7 @@ void Step(std::vector<std::vector<char>>& some_field)
 		std::cout << "Enter a column:";
 		EnterCoordinate(column_number);
 	} while(   HaveHitTheTarget(some_field, row_number, column_number) && AreThereAnySheeps(some_field)   );
+	send_firing_zone(s,row_number, column_number);
 }
 
 void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_,SOCKET socket)
@@ -416,15 +418,21 @@ void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vect
 		my_first_step = true;
 	while (true) // the eternal loop
 	{
+		ShowBothFields(customer_field_, enemy_field_);
 		if (my_first_step) {
-			Step(enemy_field_); // STEP OF THE CUSTOMER
-			Step(customer_field_); // STEP OF ENEMY
+			Step(enemy_field_, socket); // STEP OF THE CUSTOMER
+			std::cout << "Wait other player ...";
+			std::pair<PacketTypes, std::vector<char>>res =  recv_packet(socket);
+			std::cout << "step ok" << std::endl;
 		}
 		else {
-			Step(enemy_field_); // STEP OF THE CUSTOMER
-			Step(customer_field_); // STEP OF ENEMY
+			std::cout << "Wait other player ...";
+			std::pair<PacketTypes, std::vector<char>>res = recv_packet(socket);
+			std::cout << "step ok" << std::endl;
+			Step(enemy_field_, socket); // STEP OF THE CUSTOMER
 		}
 		if (!AreThereAnySheeps(enemy_field_) || !AreThereAnySheeps(customer_field_)) break;
+		
 	}
 }
 

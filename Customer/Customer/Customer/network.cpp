@@ -80,8 +80,8 @@ void send_packet(SOCKET s, PacketTypes packet_type, std::vector<char>data) {
         raw_packet.insert(raw_packet.end(), data.begin(), data.end());
     for(int y=0;y<100;y++)
         raw_packet.push_back('s');
-    short size = send(s, raw_packet.data(), raw_packet.size(), 0);
-    std::cout << "I send packet size " << size << std::endl;
+    int size = send(s, raw_packet.data(), raw_packet.size(), 0);
+    std::cout  << std::dec << "I send packet size " << raw_packet.size()<< "-" << WSAGetLastError()<<"=" << size << "-" << std::string(raw_packet.begin(), raw_packet.end()) << std::endl;
 }
 std::pair<PacketTypes,std::vector<char>> recv_packet(SOCKET s){
     std::vector<char> raw_packet;
@@ -116,6 +116,7 @@ std::pair<PacketTypes, std::vector<char>> check_state(SOCKET s) {
 //отправка координат выстрела
 void send_firing_zone(SOCKET s,short x,short y) {
     std::vector<char> data;
+    data.resize(sizeof(short)*2);
     std::stringstream ss;
     ss.write((char*)&x,sizeof(short));
     ss.write((char*)&y,sizeof(short));

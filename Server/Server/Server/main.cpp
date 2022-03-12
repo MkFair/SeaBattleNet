@@ -108,30 +108,37 @@ void send_packet(SOCKET s, PacketTypes packet_type, std::vector<char>data) {
         raw_packet.insert(raw_packet.end(), data.begin(), data.end());
     for (int y = 0; y < 100; y++)
         raw_packet.push_back('s');
-    std::cout << "I send packet size " << raw_packet.size()<<std::string(raw_packet.begin(), raw_packet.end()) << std::endl;
-    send(s, raw_packet.data(), raw_packet.size(), 0);
+    
+    int size = send(s, raw_packet.data(), raw_packet.size(), 0);
+    std::cout << "-----------------------------------------\nI send packet size " << raw_packet.size()<<"="<< size << std::string(raw_packet.begin(), raw_packet.end()) << std::endl;
+    std::cout << "-----------------------------------------\n";
 }
 
 void client(SOCKET s_cl,Game* g) {
     
-    FD_SET fd_read;
+    /*FD_SET fd_read;
     FD_ZERO(&fd_read);
     FD_SET(s_cl, &fd_read);
-    
+    */
     bool is_close = false;
     std::vector<char> buffer;
     buffer.resize(1024);
     int recv_size;
+    std::cout << "Socket- " << s_cl << std::endl;
     while (!is_close) {
-        int count = select(0, &fd_read, 0, 0, 0);
-        switch (count) {
+        std::cout << "Enter loop" << std::endl;
+       /* int count = select(0, &fd_read, 0, 0, 0); */
+        recv_size = 0;
+        buffer.resize(1024);
+        recv_size = recv(s_cl, buffer.data(), buffer.size(), 0);
+        std::cout << "Recv bytes from socket- "<< s_cl<<": " << recv_size<<WSAGetLastError() << std::endl;
+        /*switch (count) {
         case 0:
             break;
         case -1:
             break;
         default:
-            recv_size = 0;
-            recv_size = recv(s_cl, buffer.data(), buffer.size(), 0);
+            */
         
             if (recv_size == -1) is_close = true;
             if (recv_size > 0) {
@@ -144,7 +151,18 @@ void client(SOCKET s_cl,Game* g) {
                 ss.write(buffer.data(), sizeof(short));
                 ss.read((char*)&type, sizeof(short));
                 switch (type) {
-                    std::cout << "Send state " << type << std::endl;
+                    //std::cout << "Send state " << type << std::endl;
+                case PacketTypes::FIRE: {
+                        ss.write(buffer.data(), sizeof(short)*2);
+                        short x = 0, y = 0;
+                        ss.seekg(sizeof(short));
+                        ss.read((char*)&x, sizeof(short));
+                        ss.seekg(sizeof(short) * 2);
+                        ss.read((char*)&y, sizeof(short));
+                        std::cout << "Packet recv: Fire by pos " << x << ":" << y << std::endl;
+                    }
+                    break;
+                
                 case PacketTypes::ADD_SHIPS:
                     if (g->current_state == GameStates::ARRANGEMENT) {
                         std::cout << "Packet recv: Adding ship" << std::endl;
@@ -197,9 +215,11 @@ void client(SOCKET s_cl,Game* g) {
                     send(s_cl, (char*)&state, sizeof(short), 0);*/
                     break;
                 }
-                buffer.clear();
+                
+            //}
             }
-        }
+            buffer.clear();
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
     std::string responce = "HELLO KITTI";
     send(s_cl, responce.data(), responce.size(), 0);
