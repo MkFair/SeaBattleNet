@@ -371,25 +371,27 @@ bool AreAllEnemyShipsSunked(const std::vector<std::vector<char>>& some_field)
 	return true;
 }
 
-bool HaveHitTheTarget(std::vector<std::vector<char>>& field, int row_number_, int column_number_)
+bool HaveHitTheTarget(std::vector<std::vector<char>>& field, const std::vector<std::vector<char>>& my_field,int row_number_, int column_number_)
 {
 	if (field[row_number_][column_number_] == 'k')
 		field[row_number_][column_number_] = 'p';// HAVE HIT THE TARGET   оноюк
 	else field[row_number_][column_number_] = 'm';//HAVE MISSED    опнлюумскяъ
 
-	ShowField(field);
+	ShowBothFields( my_field, field);
+	//ShowField(field);
 
 	if (field[row_number_][column_number_] == 'm') return false;
 	else return true;
 }
 
-void HaveHitMyShip(std::vector<std::vector<char>>& field, int row_number_, int column_number_)
+void HaveHitMyShip(std::vector<std::vector<char>>& field, const std::vector<std::vector<char>>& enemy_field, int row_number_, int column_number_)
 {
 	if (field[row_number_][column_number_] == 'k')
 		field[row_number_][column_number_] = 'p';// HAVE HIT THE TARGET   оноюк
 	else field[row_number_][column_number_] = 'm';//HAVE MISSED    опнлюумскяъ
 
-	ShowField(field);
+	//ShowField(field);
+	ShowBothFields(field, enemy_field);
 }
 
 bool AreThereAnyShips(std::vector<std::vector<char>>& field)
@@ -400,7 +402,7 @@ bool AreThereAnyShips(std::vector<std::vector<char>>& field)
 	return false;
 }
 
-void Step(std::vector<std::vector<char>>& some_field,SOCKET s)
+void Step(std::vector<std::vector<char>>& some_field, const std::vector<std::vector<char>>& my_field, SOCKET s)
 {
 	int row_number;
 
@@ -412,7 +414,7 @@ void Step(std::vector<std::vector<char>>& some_field,SOCKET s)
 		EnterCoordinate(row_number);
 		std::cout << "Enter a column:";
 		EnterCoordinate(column_number);
-	} while(   HaveHitTheTarget(some_field, row_number, column_number) && AreThereAnyShips(some_field)   );
+	} while(   HaveHitTheTarget(some_field, my_field,row_number, column_number) && AreThereAnyShips(some_field)   );
 	send_firing_zone(s,row_number, column_number);
 }
 
@@ -429,14 +431,14 @@ void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vect
 		ShowBothFields(customer_field_, enemy_field_);
 		if (my_first_step)
 		{
-			Step(enemy_field_, s); // STEP OF THE CUSTOMER
+			Step(enemy_field_, customer_field_, s); // STEP OF THE CUSTOMER
 			std::pair<short , short> res = wait_other_player(s);
-			HaveHitMyShip(customer_field_, res.first, res.second);
+			HaveHitMyShip(customer_field_, enemy_field_, res.first, res.second);
 		} else 
 		{
 			std::pair<short, short> res = wait_other_player(s);
-			HaveHitMyShip(customer_field_, res.first, res.second);
-			Step(enemy_field_, s); // STEP OF THE CUSTOMER
+			HaveHitMyShip(customer_field_, enemy_field_,res.first, res.second);
+			Step(enemy_field_, customer_field_, s); // STEP OF THE CUSTOMER
 		}
 		if (!AreThereAnyShips(enemy_field_) || !AreThereAnyShips(customer_field_)) break;
 		
