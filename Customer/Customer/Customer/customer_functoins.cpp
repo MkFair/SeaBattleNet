@@ -379,9 +379,17 @@ bool HaveHitTheTarget(std::vector<std::vector<char>>& field, int row_number_, in
 
 	ShowField(field);
 
-
 	if (field[row_number_][column_number_] == 'm') return false;
 	else return true;
+}
+
+void HaveHitMyShip(std::vector<std::vector<char>>& field, int row_number_, int column_number_)
+{
+	if (field[row_number_][column_number_] == 'k')
+		field[row_number_][column_number_] = 'p';// HAVE HIT THE TARGET   оноюк
+	else field[row_number_][column_number_] = 'm';//HAVE MISSED    опнлюумскяъ
+
+	ShowField(field);
 }
 
 bool AreThereAnySheeps(std::vector<std::vector<char>>& field)
@@ -423,6 +431,7 @@ void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vect
 			Step(enemy_field_, socket); // STEP OF THE CUSTOMER
 			std::cout << "Wait other player ...";
 			std::pair<PacketTypes, std::vector<char>>res =  recv_packet(socket);
+			//HaveHitMyShip(customer_field_, res.first, res.second);
 			std::cout << "step ok" << std::endl;
 		}
 		else {
