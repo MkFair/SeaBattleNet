@@ -73,6 +73,10 @@ void add_ship(SOCKET s,std::vector<std::vector<int>> ship_info) {
 std::pair<short, short> wait_other_player(SOCKET s) {
     std::cout << "Wait other player ...";
     std::pair<PacketTypes, std::vector<char>>res = recv_packet(s);
+    while (res.first != PacketTypes::CAN_MOVE) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        res = recv_packet(s);
+    }
     std::cout << "step ok" << std::endl;
     std::stringstream ss;
     ss.read(res.second.data(), sizeof(short)*2);
@@ -106,7 +110,7 @@ std::pair<PacketTypes,std::vector<char>> recv_packet(SOCKET s){
     std::cout << ss.str()<<std::endl;
     ss.seekg(0);
     ss.read((char*)&type,sizeof(short));
-    std::cout << std::hex<<type << std::endl;
+    std::cout << "new package----------------------" <<type << std::endl<<"--------------------------------" << std::endl;
     raw_packet.erase(raw_packet.begin(), raw_packet.begin()+ sizeof(short));
     return std::pair<PacketTypes, std::vector<char>>(type, raw_packet);
 }

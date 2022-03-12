@@ -55,7 +55,19 @@ short count_deck_calculate(std::pair<short, short> min_pos, std::pair<short, sho
     if (min_pos.second == max_pos.second)
         return abs(min_pos.first - max_pos.first);
 }
-
+bool is_success_hit(std::vector<Ship> ships,short x, short y) {
+    for (auto ship : ships) {
+        if (ship.min_pos.first == ship.max_pos.first and x == ship.max_pos.first) {
+            if (ship.min_pos.second < y < ship.max_pos.second)
+                return true;
+        }
+        else if(ship.min_pos.second == ship.max_pos.second and y == ship.max_pos.second){
+            if(ship.min_pos.first < x < ship.max_pos.first)
+                return true;
+        }
+    }
+    return false;
+}
 Ship from_raw_data(std::vector<char>raw_data) {
     std::stringstream ss;
     raw_data.resize(sizeof(short) * 4);
@@ -159,14 +171,20 @@ void client(SOCKET s_cl,Game* g) {
                         ss.read((char*)&x, sizeof(short));
                         ss.seekg(sizeof(short) * 2);
                         ss.read((char*)&y, sizeof(short));
+                        buffer.erase(buffer.begin(), buffer.begin()+sizeof(short)*2);
+                        buffer.erase(buffer.begin() + sizeof(short) * 2, buffer.end());
                         std::cout << "Packet recv: Fire by pos " << x << ":" << y << std::endl;
-                        if (g->player_tern_id == 1 and g->players.first.s == s_cl) {
-                            send_packet(g->players.first.s, PacketTypes::CAN_MOVE, std::vector<char>());
-                            send_packet(g->players.second.s, PacketTypes::OTHER_MOVE, std::vector<char>());
+                        if (g->player_tern_id == 1) {
+                            send_packet(g->players.first.s, PacketTypes::OTHER_MOVE, buffer);
+                            send_packet(g->players.second.s, PacketTypes::CAN_MOVE, buffer);
+                            g->player_tern_id = 2;
+                            std::cout << "Packet send: second CAN_MOVE " << x << ":" << y << std::endl;
                         }
                         else {
-                            send_packet(g->players.first.s, PacketTypes::OTHER_MOVE, std::vector<char>());
-                            send_packet(g->players.second.s, PacketTypes::CAN_MOVE, std::vector<char>());
+                            send_packet(g->players.first.s, PacketTypes::CAN_MOVE, buffer);
+                            send_packet(g->players.second.s, PacketTypes::OTHER_MOVE, buffer);
+                            std::cout << "Packet send: second CAN_MOVE " << x << ":" << y << std::endl;
+                            g->player_tern_id = 1;
                         }
                     }
                     break;
@@ -187,14 +205,8 @@ void client(SOCKET s_cl,Game* g) {
                         short count_ships = g->players.first.ships.size() + g->players.second.ships.size();
                         if (count_ships == TOTAL_COUNT_SHIPS) {
                             std::this_thread::sleep_for(std::chrono::milliseconds(50));
-                            if (g->player_tern_id == 1 and g->players.first.s == s_cl) {
-                                send_packet(g->players.first.s, PacketTypes::CAN_MOVE, std::vector<char>());
-                                send_packet(g->players.second.s, PacketTypes::OTHER_MOVE, std::vector<char>());
-                            }
-                            else {
-                                send_packet(g->players.first.s, PacketTypes::OTHER_MOVE, std::vector<char>());
-                                send_packet(g->players.second.s, PacketTypes::CAN_MOVE, std::vector<char>());
-                            }
+                            send_packet(g->players.first.s, PacketTypes::CAN_MOVE, std::vector<char>());
+                            send_packet(g->players.second.s, PacketTypes::OTHER_MOVE, std::vector<char>());
                             
                             //send_packet(g->players.second.s,PacketTypes::START_GAME,std::vector<char>());
                             g->current_state = GameStates::RUNNING;
@@ -282,6 +294,7 @@ int main()
     Game game;
     game.current_state = GameStates::WAIT;
     game.count_players=0;
+    game.player_tern_id = 1;
     while ((s_cl = accept(sock, (sockaddr*)&saddr_cl, &saddr_len)) != INVALID_SOCKET) {
         std::cout << "Accept new client" << std::endl;
         

@@ -438,7 +438,7 @@ void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vect
 			HaveHitMyShip(customer_field_, res.first, res.second);
 			Step(enemy_field_, socket); // STEP OF THE CUSTOMER
 		}
-		if (!AreThereAnySheeps(enemy_field_) || !AreThereAnySheeps(customer_field_)) break;
+		//if (!AreThereAnySheeps(enemy_field_) || !AreThereAnySheeps(customer_field_)) break;
 		
 	}
 }
