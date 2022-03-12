@@ -427,12 +427,15 @@ void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vect
 	while (true) // the eternal loop
 	{
 		ShowBothFields(customer_field_, enemy_field_);
-		if (my_first_step) {
+		if (my_first_step)
+		{
 			Step(enemy_field_, socket); // STEP OF THE CUSTOMER
 			std::pair<short , short> res = wait_other_player(socket);
-		}
-		else {
+			HaveHitMyShip(customer_field_, res.first, res.second);
+		} else 
+		{
 			std::pair<short, short> res = wait_other_player(socket);
+			HaveHitMyShip(customer_field_, res.first, res.second);
 			Step(enemy_field_, socket); // STEP OF THE CUSTOMER
 		}
 		if (!AreThereAnySheeps(enemy_field_) || !AreThereAnySheeps(customer_field_)) break;

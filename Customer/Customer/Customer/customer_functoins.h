@@ -18,7 +18,6 @@ void ArrangeONEShip(std::vector<std::vector<char>>& my_field, SOCKET s);
 //////////////////////////////////////////////////
 ////////////////////////////////////////////////
 
-
 std::vector<std::vector<char>> InitField();
 void ShowField(const std::vector<std::vector<char>>& my_field);
 void ShowBothFields(const std::vector<std::vector<char>>& my_field, const std::vector<std::vector<char>>& enemy_field);
@@ -36,7 +35,7 @@ void HaveHitMyShip(std::vector<std::vector<char>>& field, int row_number_, int c
 bool AreThereAnySheeps(std::vector<std::vector<char>>& field);
 void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_, SOCKET s);
 void Results(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_);
-
 bool check_is_linear(const std::vector<std::vector<int>>& ship, bool is_horisontal);
 const std::vector<std::vector<int>>& sort_ship(std::vector<std::vector<int>>& ship);
+
 #endif
