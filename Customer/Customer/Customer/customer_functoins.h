@@ -31,9 +31,9 @@ bool IsNearHereAnotherShips(std::vector<std::vector<char>>& my_field, int row_nu
 void AlgorithmArrangeShips(std::vector<std::vector<char>>& field, int quantity_of_decks, SOCKET socket);
 void ArrangeShips(std::vector<std::vector<char>>& my_field, SOCKET s);
 bool HaveHitTheTarget(std::vector<std::vector<char>>& field, int row_number, int column_number);
-void HaveHitMyShip(std::vector<std::vector<char>>& field, int row_number_, int column_number_);
-bool AreThereAnySheeps(std::vector<std::vector<char>>& field);
-void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_, SOCKET s);
+void HaveHitMyShip(std::vector<std::vector<char>>& field, int row_number, int column_number);
+bool AreThereAnyShips(std::vector<std::vector<char>>& field);
+void Game(std::vector<std::vector<char>>& customer_field, std::vector<std::vector<char>>& enemy_field, SOCKET s);
 void Results(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_);
 bool check_is_linear(const std::vector<std::vector<int>>& ship, bool is_horisontal);
 const std::vector<std::vector<int>>& sort_ship(std::vector<std::vector<int>>& ship);

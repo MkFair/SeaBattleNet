@@ -392,7 +392,7 @@ void HaveHitMyShip(std::vector<std::vector<char>>& field, int row_number_, int c
 	ShowField(field);
 }
 
-bool AreThereAnySheeps(std::vector<std::vector<char>>& field)
+bool AreThereAnyShips(std::vector<std::vector<char>>& field)
 {
 	for (int i = 0; i < ROW; ++i)
 		for (int j = 0; j < COLUMN; ++j)
@@ -412,14 +412,14 @@ void Step(std::vector<std::vector<char>>& some_field,SOCKET s)
 		EnterCoordinate(row_number);
 		std::cout << "Enter a column:";
 		EnterCoordinate(column_number);
-	} while(   HaveHitTheTarget(some_field, row_number, column_number) && AreThereAnySheeps(some_field)   );
+	} while(   HaveHitTheTarget(some_field, row_number, column_number) && AreThereAnyShips(some_field)   );
 	send_firing_zone(s,row_number, column_number);
 }
 
-void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_,SOCKET socket)
+void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_,SOCKET s)
 {
 	std::cout << "Wait start game ..." << std::endl;
-	PacketTypes type = wait_start_game(socket);
+	PacketTypes type = wait_start_game(s);
 	std::cout << "game is starting  ... current state packet " << type << std::endl;
 	bool my_first_step = false;
 	if (type == PacketTypes::CAN_MOVE)
@@ -429,23 +429,23 @@ void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vect
 		ShowBothFields(customer_field_, enemy_field_);
 		if (my_first_step)
 		{
-			Step(enemy_field_, socket); // STEP OF THE CUSTOMER
-			std::pair<short , short> res = wait_other_player(socket);
+			Step(enemy_field_, s); // STEP OF THE CUSTOMER
+			std::pair<short , short> res = wait_other_player(s);
 			HaveHitMyShip(customer_field_, res.first, res.second);
 		} else 
 		{
-			std::pair<short, short> res = wait_other_player(socket);
+			std::pair<short, short> res = wait_other_player(s);
 			HaveHitMyShip(customer_field_, res.first, res.second);
-			Step(enemy_field_, socket); // STEP OF THE CUSTOMER
+			Step(enemy_field_, s); // STEP OF THE CUSTOMER
 		}
-		if (!AreThereAnySheeps(enemy_field_) || !AreThereAnySheeps(customer_field_)) break;
+		if (!AreThereAnyShips(enemy_field_) || !AreThereAnyShips(customer_field_)) break;
 		
 	}
 }
 
 void Results(std::vector<std::vector<char>>& customer_field_, std::vector<std::vector<char>>& enemy_field_)
 {
-	if (AreThereAnySheeps(customer_field_))
+	if (AreThereAnyShips(customer_field_))
 		std::cout << "You are a winner. Congratulations!" << std::endl;
 	else 
 		std::cout << "You are a looser. ";
