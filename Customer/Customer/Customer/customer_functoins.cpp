@@ -420,7 +420,7 @@ void Game(std::vector<std::vector<char>>& customer_field_, std::vector<std::vect
 {
 	std::cout << "Wait start game ..." << std::endl;
 	PacketTypes type = wait_start_game(socket);
-	std::cout << "game is starting  ..." << std::endl;
+	std::cout << "game is starting  ... current state packet " << type << std::endl;
 	bool my_first_step = false;
 	if (type == PacketTypes::CAN_MOVE)
 		my_first_step = true;

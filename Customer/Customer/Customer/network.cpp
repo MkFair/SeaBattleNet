@@ -144,12 +144,13 @@ PacketTypes wait_start_game(SOCKET s, std::chrono::milliseconds delay ) {
         std::this_thread::sleep_for(delay);
         data = recv_packet(s);
     }
-    std::cout << "Start play game" << std::endl;
-    PacketTypes result;
-    std::stringstream ss;
+    std::cout << "Start play game"<< data.first << std::endl;
+    PacketTypes result = PacketTypes::UNRECOG;
+    /*std::stringstream ss;
     ss.write(data.second.data(),sizeof(short));
     ss.read((char*)&result,sizeof(short));
-    return result;
+    std::cout << "------------------------" << result << std::endl;*/
+    return data.first;
 }
 bool wait_event(SOCKET s ,PacketTypes check_type) {
     short type;
